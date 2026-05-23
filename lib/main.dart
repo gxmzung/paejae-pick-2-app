@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(const PaejaePickApp());
@@ -498,6 +499,52 @@ class HomeScreen extends StatelessWidget {
               Expanded(child: MissionMiniCard()),
             ],
           ),
+          const SizedBox(height: 16),
+          AppCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'QR·코드 미션',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+                ),
+                const SizedBox(height: 6),
+                const Text(
+                  '건물이나 행사 현장에서 받은 코드를 입력하고 나섬이 카드를 수집하세요.',
+                  style: TextStyle(
+                    color: AppColors.sub,
+                    fontWeight: FontWeight.w700,
+                    height: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: FilledButton.icon(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: AppColors.darkBlue,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const MissionCodeScreen(),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.qr_code_2),
+                    label: const Text(
+                      '미션 코드 입력하기',
+                      style: TextStyle(fontWeight: FontWeight.w900),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
           const SizedBox(height: 24),
           const SectionTitle(title: '동아리 모집', action: '전체 보기'),
           const SizedBox(height: 12),
@@ -906,6 +953,385 @@ class ProfileRow extends StatelessWidget {
           Text(label, style: const TextStyle(color: AppColors.sub, fontWeight: FontWeight.w700)),
           Text(value, style: const TextStyle(fontWeight: FontWeight.w900)),
         ],
+      ),
+    );
+  }
+}
+
+
+class MissionCodeScreen extends StatefulWidget {
+  const MissionCodeScreen({super.key});
+
+  @override
+  State<MissionCodeScreen> createState() => _MissionCodeScreenState();
+}
+
+class _MissionCodeScreenState extends State<MissionCodeScreen> {
+  final TextEditingController controller = TextEditingController();
+
+  final Map<String, Map<String, String>> missionRewards = const {
+    'BAEJAE-FOOD': {
+      'title': '학생식당 나섬이',
+      'rarity': 'Common',
+      'desc': '학생식당 방문 미션을 완료해서 획득한 나섬이 카드입니다.',
+      'titleReward': '오늘의 식객',
+    },
+    'LIBRARY-NIGHT': {
+      'title': '도서관 나섬이',
+      'rarity': 'Rare',
+      'desc': '도서관 야간 탐험 미션을 완료해서 획득한 나섬이 카드입니다.',
+      'titleReward': '야간 학습자',
+    },
+    'IT-CODE': {
+      'title': 'IT관 개발자 나섬이',
+      'rarity': 'Rare',
+      'desc': 'IT관 코드 미션을 완료해서 획득한 개발자 나섬이 카드입니다.',
+      'titleReward': '캠퍼스 빌더',
+    },
+    'CLUB-HUB': {
+      'title': '동아리 헌터 배지',
+      'rarity': 'Badge',
+      'desc': '동아리 공고관 미션을 완료해서 획득한 배지입니다.',
+      'titleReward': '동아리 헌터',
+    },
+    'CLEAN-CAMPUS': {
+      'title': '클린캠퍼스 배지',
+      'rarity': 'Badge',
+      'desc': '캠퍼스 경보와 흡연구역 안내 미션을 완료해서 획득한 배지입니다.',
+      'titleReward': '클린캠퍼스 참여자',
+    },
+  };
+
+  String? errorText;
+  List<String> collected = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadCollected();
+  }
+
+  Future<void> loadCollected() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      collected = prefs.getStringList('collected_cards') ?? [];
+    });
+  }
+
+  Future<void> submitCode() async {
+    final code = controller.text.trim().toUpperCase();
+
+    if (!missionRewards.containsKey(code)) {
+      setState(() {
+        errorText = '유효하지 않은 미션 코드입니다.';
+      });
+      return;
+    }
+
+    final reward = missionRewards[code]!;
+    final cardTitle = reward['title']!;
+
+    final prefs = await SharedPreferences.getInstance();
+    final current = prefs.getStringList('collected_cards') ?? [];
+
+    if (!current.contains(cardTitle)) {
+      current.add(cardTitle);
+      await prefs.setStringList('collected_cards', current);
+    }
+
+    if (!mounted) return;
+
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => MissionCompleteScreen(
+          code: code,
+          title: reward['title']!,
+          rarity: reward['rarity']!,
+          desc: reward['desc']!,
+          titleReward: reward['titleReward']!,
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final sampleCodes = missionRewards.keys.toList();
+
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(Icons.arrow_back),
+                  ),
+                  const SizedBox(width: 4),
+                  const Expanded(
+                    child: Header(
+                      title: 'QR·코드 미션',
+                      subtitle: '현장에서 받은 코드를 입력하고 카드를 수집하세요.',
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              AppCard(
+                color: AppColors.darkBlue,
+                child: Row(
+                  children: [
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '캠퍼스 미션 코드',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            '코드를 입력하면\n도감 카드가 열립니다.',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.w900,
+                              height: 1.25,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Nasumi(size: 92, label: 'QR'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                '미션 코드 입력',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: controller,
+                textCapitalization: TextCapitalization.characters,
+                decoration: InputDecoration(
+                  hintText: '예: LIBRARY-NIGHT',
+                  errorText: errorText,
+                  filled: true,
+                  fillColor: Colors.white,
+                  prefixIcon: const Icon(Icons.qr_code_2),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: const BorderSide(color: AppColors.blue, width: 1.6),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 14),
+              SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: FilledButton(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: AppColors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  onPressed: submitCode,
+                  child: const Text(
+                    '카드 획득하기',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              SectionTitle(
+                title: '테스트 코드',
+                action: 'v0.3 local mock',
+              ),
+              const SizedBox(height: 12),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: sampleCodes.map((code) {
+                  return ActionChip(
+                    label: Text(
+                      code,
+                      style: const TextStyle(fontWeight: FontWeight.w900),
+                    ),
+                    onPressed: () {
+                      controller.text = code;
+                    },
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 24),
+              AppCard(
+                child: Row(
+                  children: [
+                    const Icon(Icons.collections_bookmark, color: AppColors.yellow),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        '현재 이 기기에 저장된 카드: ${collected.length}개',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w900,
+                          color: AppColors.text,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class MissionCompleteScreen extends StatelessWidget {
+  final String code;
+  final String title;
+  final String rarity;
+  final String desc;
+  final String titleReward;
+
+  const MissionCompleteScreen({
+    super.key,
+    required this.code,
+    required this.title,
+    required this.rarity,
+    required this.desc,
+    required this.titleReward,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(22, 30, 22, 30),
+          child: Column(
+            children: [
+              const SizedBox(height: 24),
+              const Nasumi(size: 148, label: '획득'),
+              const SizedBox(height: 24),
+              const Text(
+                '미션 완료!',
+                style: TextStyle(fontSize: 34, fontWeight: FontWeight.w900),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                code,
+                style: const TextStyle(
+                  color: AppColors.blue,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              const SizedBox(height: 24),
+              AppCard(
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                      decoration: BoxDecoration(
+                        color: AppColors.yellow.withOpacity(0.18),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Text(
+                        rarity,
+                        style: const TextStyle(
+                          color: AppColors.orange,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      title,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      desc,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: AppColors.sub,
+                        height: 1.6,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppColors.blue.withOpacity(0.08),
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                      child: Text(
+                        '칭호 진행도: $titleReward +1',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: AppColors.blue,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: FilledButton(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: AppColors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (_) => const MainShell()),
+                      (route) => false,
+                    );
+                  },
+                  child: const Text(
+                    '도감으로 돌아가기',
+                    style: TextStyle(fontWeight: FontWeight.w900),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
