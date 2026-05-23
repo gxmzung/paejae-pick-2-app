@@ -15,15 +15,15 @@ class PaejaePickApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
-        scaffoldBackgroundColor: const Color(0xFFF8FAFC),
+        scaffoldBackgroundColor: AppColors.bg,
         textTheme: GoogleFonts.notoSansKrTextTheme(),
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF2563EB),
-          primary: const Color(0xFF2563EB),
-          secondary: const Color(0xFF10B981),
+          seedColor: AppColors.blue,
+          primary: AppColors.blue,
+          secondary: AppColors.green,
         ),
       ),
-      home: const MainShell(),
+      home: const SplashScreen(),
     );
   }
 }
@@ -33,10 +33,257 @@ class AppColors {
   static const darkBlue = Color(0xFF0F2F6E);
   static const green = Color(0xFF10B981);
   static const yellow = Color(0xFFFBBF24);
+  static const orange = Color(0xFFF97316);
+  static const purple = Color(0xFF7C3AED);
   static const red = Color(0xFFEF4444);
   static const bg = Color(0xFFF8FAFC);
   static const text = Color(0xFF111827);
   static const sub = Color(0xFF6B7280);
+}
+
+class SplashScreen extends StatelessWidget {
+  const SplashScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.blue,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(28),
+          child: Column(
+            children: [
+              const Spacer(),
+              const Nasumi(size: 140, label: 'P'),
+              const SizedBox(height: 26),
+              const Text(
+                '배재Pick 2.0',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 36,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -1,
+                ),
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                '학교를 더 자주 탐험하고,\n나섬이와 캠퍼스 도감을 수집하는\n배재대학교형 스마트캠퍼스 앱',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white70,
+                  height: 1.6,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const Spacer(),
+              SizedBox(
+                width: double.infinity,
+                height: 58,
+                child: FilledButton(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: AppColors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(22),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (_) => const LoginScreen()),
+                    );
+                  },
+                  child: const Text(
+                    '배재Pick 시작하기',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w900),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 14),
+              const Text(
+                'Campus Quest · CityBrain · Nasumi Collection',
+                style: TextStyle(color: Colors.white54, fontWeight: FontWeight.w700),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class LoginScreen extends StatelessWidget {
+  const LoginScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(22, 28, 22, 28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Row(
+                children: [
+                  Nasumi(size: 56, label: 'P'),
+                  SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '배재Pick',
+                        style: TextStyle(fontSize: 26, fontWeight: FontWeight.w900),
+                      ),
+                      Text(
+                        'Smart Campus Quest',
+                        style: TextStyle(color: AppColors.sub, fontWeight: FontWeight.w700),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 34),
+              const Text(
+                '오늘의 캠퍼스를\nPick 해보세요.',
+                style: TextStyle(
+                  fontSize: 34,
+                  fontWeight: FontWeight.w900,
+                  height: 1.2,
+                  letterSpacing: -1,
+                ),
+              ),
+              const SizedBox(height: 12),
+              const Text(
+                '학교 이메일 인증 기반으로 시작하는\n배재대학교 학생용 스마트캠퍼스 앱입니다.',
+                style: TextStyle(
+                  color: AppColors.sub,
+                  fontSize: 15,
+                  height: 1.6,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 28),
+              const AppInput(label: '학교 이메일', hint: 'example@pcu.ac.kr'),
+              const SizedBox(height: 14),
+              const AppInput(label: '비밀번호', hint: '비밀번호 입력', obscure: true),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                height: 58,
+                child: FilledButton(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: AppColors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(22),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (_) => const MainShell()),
+                    );
+                  },
+                  child: const Text(
+                    '로그인',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w900),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                height: 58,
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.blue,
+                    side: const BorderSide(color: AppColors.blue, width: 1.4),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(22),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (_) => const MainShell()),
+                    );
+                  },
+                  child: const Text(
+                    '이메일 인증 후 시작하기',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w900),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 22),
+              const AppCard(
+                child: Row(
+                  children: [
+                    Icon(Icons.verified_user_outlined, color: AppColors.green),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'v0.2에서는 로그인/이메일 인증 UI mock만 제공합니다. 실제 인증은 Firebase 또는 Supabase 연동 단계에서 구현합니다.',
+                        style: TextStyle(
+                          color: AppColors.sub,
+                          fontWeight: FontWeight.w700,
+                          height: 1.5,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class AppInput extends StatelessWidget {
+  final String label;
+  final String hint;
+  final bool obscure;
+
+  const AppInput({
+    super.key,
+    required this.label,
+    required this.hint,
+    this.obscure = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: const TextStyle(fontWeight: FontWeight.w900)),
+        const SizedBox(height: 8),
+        TextField(
+          obscureText: obscure,
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: const TextStyle(color: AppColors.sub),
+            filled: true,
+            fillColor: Colors.white,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+              borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+              borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+              borderSide: const BorderSide(color: AppColors.blue, width: 1.6),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }
 
 class MainShell extends StatefulWidget {
@@ -177,23 +424,12 @@ class Nasumi extends StatelessWidget {
               ),
             ),
           ),
-          Positioned(
-            top: size * 0.40,
-            left: size * 0.28,
-            child: _eye(size),
-          ),
-          Positioned(
-            top: size * 0.40,
-            right: size * 0.28,
-            child: _eye(size),
-          ),
+          Positioned(top: size * 0.40, left: size * 0.28, child: _eye(size)),
+          Positioned(top: size * 0.40, right: size * 0.28, child: _eye(size)),
           Positioned(
             bottom: size * 0.22,
             child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: size * 0.12,
-                vertical: size * 0.04,
-              ),
+              padding: EdgeInsets.symmetric(horizontal: size * 0.12, vertical: size * 0.04),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(size),
@@ -217,10 +453,7 @@ class Nasumi extends StatelessWidget {
     return Container(
       width: size * 0.08,
       height: size * 0.08,
-      decoration: const BoxDecoration(
-        color: Colors.black,
-        shape: BoxShape.circle,
-      ),
+      decoration: const BoxDecoration(color: Colors.black, shape: BoxShape.circle),
     );
   }
 }
@@ -379,10 +612,10 @@ class CampusMapScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const Positioned(left: 22, top: 22, child: MapBuilding(label: '배재관', color: Color(0xFFF97316), width: 120, height: 90)),
-                  const Positioned(right: 26, top: 40, child: MapBuilding(label: '정보과학관', color: Color(0xFF2563EB), width: 110, height: 110)),
-                  const Positioned(left: 64, bottom: 120, child: MapBuilding(label: '학생식당', color: Color(0xFF10B981), width: 130, height: 70)),
-                  const Positioned(right: 58, bottom: 90, child: MapBuilding(label: '도서관', color: Color(0xFF7C3AED), width: 125, height: 85)),
+                  const Positioned(left: 22, top: 22, child: MapBuilding(label: '배재관', color: AppColors.orange, width: 120, height: 90)),
+                  const Positioned(right: 26, top: 40, child: MapBuilding(label: '정보과학관', color: AppColors.blue, width: 110, height: 110)),
+                  const Positioned(left: 64, bottom: 120, child: MapBuilding(label: '학생식당', color: AppColors.green, width: 130, height: 70)),
+                  const Positioned(right: 58, bottom: 90, child: MapBuilding(label: '도서관', color: AppColors.purple, width: 125, height: 85)),
                   const Positioned(left: 190, top: 210, child: Nasumi(size: 58, label: '책')),
                   Positioned(
                     left: 18,
@@ -438,11 +671,7 @@ class MapBuilding extends StatelessWidget {
           color: color,
           borderRadius: BorderRadius.circular(14),
           boxShadow: [
-            BoxShadow(
-              color: color.withOpacity(0.35),
-              blurRadius: 20,
-              offset: const Offset(0, 10),
-            )
+            BoxShadow(color: color.withOpacity(0.35), blurRadius: 20, offset: const Offset(0, 10)),
           ],
         ),
         child: Text(label, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900)),
@@ -571,11 +800,7 @@ class Header extends StatelessWidget {
   final String title;
   final String subtitle;
 
-  const Header({
-    super.key,
-    required this.title,
-    required this.subtitle,
-  });
+  const Header({super.key, required this.title, required this.subtitle});
 
   @override
   Widget build(BuildContext context) {
@@ -602,11 +827,7 @@ class SectionTitle extends StatelessWidget {
   final String title;
   final String? action;
 
-  const SectionTitle({
-    super.key,
-    required this.title,
-    this.action,
-  });
+  const SectionTitle({super.key, required this.title, this.action});
 
   @override
   Widget build(BuildContext context) {
@@ -642,10 +863,7 @@ class ClubCard extends StatelessWidget {
           Container(
             width: 58,
             height: 58,
-            decoration: BoxDecoration(
-              color: AppColors.blue.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(18),
-            ),
+            decoration: BoxDecoration(color: AppColors.blue.withOpacity(0.1), borderRadius: BorderRadius.circular(18)),
             child: const Icon(Icons.flight_takeoff, color: AppColors.blue),
           ),
           const SizedBox(width: 14),
@@ -663,10 +881,7 @@ class ClubCard extends StatelessWidget {
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              color: AppColors.red.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(999),
-            ),
+            decoration: BoxDecoration(color: AppColors.red.withOpacity(0.1), borderRadius: BorderRadius.circular(999)),
             child: Text(deadline, style: const TextStyle(color: AppColors.red, fontWeight: FontWeight.w900)),
           ),
         ],
@@ -679,11 +894,7 @@ class ProfileRow extends StatelessWidget {
   final String label;
   final String value;
 
-  const ProfileRow({
-    super.key,
-    required this.label,
-    required this.value,
-  });
+  const ProfileRow({super.key, required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
