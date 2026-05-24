@@ -2236,6 +2236,134 @@ class ProfileRow extends StatelessWidget {
 }
 
 
+
+class QRMockScreen extends StatelessWidget {
+  const QRMockScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IconButton(
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(Icons.arrow_back),
+              ),
+              const SizedBox(height: 8),
+              const Header(
+                title: 'QR 스캔',
+                subtitle: 'v1.3에서는 실제 카메라 대신 mock 화면으로 제공합니다.',
+              ),
+              const SizedBox(height: 20),
+              AppCard(
+                color: AppColors.darkBlue,
+                child: Column(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      height: 260,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.08),
+                        borderRadius: BorderRadius.circular(26),
+                        border: Border.all(color: Colors.white24, width: 2),
+                      ),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            width: 180,
+                            height: 180,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.white, width: 4),
+                              borderRadius: BorderRadius.circular(22),
+                            ),
+                          ),
+                          const Icon(Icons.qr_code_scanner, color: Colors.white, size: 84),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                    const Text(
+                      '실제 QR 스캐너는 v1.4 이후 연동 예정',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 18,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      '현재는 내부 테스트를 위해 코드 입력 방식으로 미션을 완료합니다.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontWeight: FontWeight.w700,
+                        height: 1.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 18),
+              AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '왜 아직 mock인가요?',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      '실제 QR 스캔은 카메라 권한, 기기 테스트, 개인정보/위치 오해 가능성, 악용 방지 로직이 필요합니다. 내부 테스트 단계에서는 코드 입력으로 사용성을 먼저 검증합니다.',
+                      style: TextStyle(
+                        color: AppColors.sub,
+                        fontWeight: FontWeight.w700,
+                        height: 1.6,
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 52,
+                      child: FilledButton.icon(
+                        style: FilledButton.styleFrom(
+                          backgroundColor: AppColors.blue,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const MissionCodeScreen(),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.keyboard),
+                        label: const Text(
+                          '코드 입력으로 미션 완료',
+                          style: TextStyle(fontWeight: FontWeight.w900),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class MissionCodeScreen extends StatefulWidget {
   const MissionCodeScreen({super.key});
 
@@ -2245,31 +2373,32 @@ class MissionCodeScreen extends StatefulWidget {
 
 class _MissionCodeScreenState extends State<MissionCodeScreen> {
   final TextEditingController controller = TextEditingController();
+  String? errorMessage;
 
   final Map<String, Map<String, String>> missionRewards = const {
     'BAEJAE-FOOD': {
       'title': '학생식당 나섬이',
       'rarity': 'Common',
-      'desc': '학생식당 방문 미션을 완료해서 획득한 나섬이 카드입니다.',
+      'desc': '학생식당 방문 미션을 완료해서 획득한 나섬이입니다.',
       'titleReward': '오늘의 식객',
     },
     'LIBRARY-NIGHT': {
       'title': '도서관 나섬이',
       'rarity': 'Rare',
-      'desc': '도서관 야간 탐험 미션을 완료해서 획득한 나섬이 카드입니다.',
-      'titleReward': '야간 학습자',
+      'desc': '시험기간 도서관 미션을 완료해서 획득한 나섬이입니다.',
+      'titleReward': '밤샘 탐험가',
     },
     'IT-CODE': {
       'title': 'IT관 개발자 나섬이',
       'rarity': 'Rare',
-      'desc': 'IT관 코드 미션을 완료해서 획득한 개발자 나섬이 카드입니다.',
+      'desc': '정보과학관 개발자 미션을 완료해서 획득한 나섬이입니다.',
       'titleReward': '캠퍼스 빌더',
     },
     'CLUB-HUB': {
       'title': '동아리 헌터 배지',
       'rarity': 'Badge',
-      'desc': '동아리 공고관 미션을 완료해서 획득한 배지입니다.',
-      'titleReward': '동아리 헌터',
+      'desc': '동아리 공고관 탐색 미션을 완료해서 획득한 배지입니다.',
+      'titleReward': '동아리 탐색자',
     },
     'CLEAN-CAMPUS': {
       'title': '클린캠퍼스 배지',
@@ -2309,50 +2438,33 @@ class _MissionCodeScreenState extends State<MissionCodeScreen> {
     },
   };
 
-  String? errorText;
-  List<String> collected = [];
-
-  @override
-  void initState() {
-    super.initState();
-    loadCollected();
-  }
-
-  Future<void> loadCollected() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      collected = prefs.getStringList('collected_cards') ?? [];
-    });
-  }
-
   Future<void> submitCode() async {
     final code = controller.text.trim().toUpperCase();
 
     if (!missionRewards.containsKey(code)) {
       setState(() {
-        errorText = '유효하지 않은 미션 코드입니다.';
+        errorMessage = '등록되지 않은 미션 코드입니다. 테스트 코드 목록을 확인하세요.';
       });
       return;
     }
 
     final reward = missionRewards[code]!;
-    final cardTitle = reward['title']!;
-
     final prefs = await SharedPreferences.getInstance();
     final current = prefs.getStringList('collected_cards') ?? [];
+    final title = reward['title']!;
 
-    if (!current.contains(cardTitle)) {
-      current.add(cardTitle);
+    if (!current.contains(title)) {
+      current.add(title);
       await prefs.setStringList('collected_cards', current);
     }
 
     if (!mounted) return;
 
-    Navigator.of(context).pushReplacement(
+    Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => MissionCompleteScreen(
           code: code,
-          title: reward['title']!,
+          title: title,
           rarity: reward['rarity']!,
           desc: reward['desc']!,
           titleReward: reward['titleReward']!,
@@ -2361,9 +2473,16 @@ class _MissionCodeScreenState extends State<MissionCodeScreen> {
     );
   }
 
+  void setQuickCode(String code) {
+    setState(() {
+      controller.text = code;
+      errorMessage = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final sampleCodes = missionRewards.keys.toList();
+    final codes = missionRewards.keys.toList();
 
     return Scaffold(
       backgroundColor: AppColors.bg,
@@ -2373,137 +2492,142 @@ class _MissionCodeScreenState extends State<MissionCodeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  IconButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    icon: const Icon(Icons.arrow_back),
-                  ),
-                  const SizedBox(width: 4),
-                  const Expanded(
-                    child: Header(
-                      title: 'QR·코드 미션',
-                      subtitle: '현장에서 받은 코드를 입력하고 카드를 수집하세요.',
-                    ),
-                  ),
-                ],
+              IconButton(
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(Icons.arrow_back),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 8),
+              const Header(
+                title: '미션 코드',
+                subtitle: '건물·식당·동아리 미션 코드를 입력하세요.',
+              ),
+              const SizedBox(height: 18),
               AppCard(
-                color: AppColors.darkBlue,
+                color: AppColors.blue,
                 child: Row(
-                  children: [
-                    const Expanded(
+                  children: const [
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '캠퍼스 미션 코드',
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontWeight: FontWeight.w800,
-                            ),
+                            '코드 기반 미션',
+                            style: TextStyle(color: Colors.white70, fontWeight: FontWeight.w800),
                           ),
                           SizedBox(height: 8),
                           Text(
-                            '코드를 입력하면\n도감 카드가 열립니다.',
+                            'QR 없이도 내부 테스트가\n가능한 미션 구조입니다.',
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 24,
+                              fontSize: 22,
                               fontWeight: FontWeight.w900,
-                              height: 1.25,
+                              height: 1.35,
                             ),
                           ),
                         ],
                       ),
                     ),
-                    const Nasumi(size: 92, label: 'QR'),
+                    Nasumi(size: 86, label: '미션'),
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
-              const Text(
-                '미션 코드 입력',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: controller,
-                textCapitalization: TextCapitalization.characters,
-                decoration: InputDecoration(
-                  hintText: '예: LIBRARY-NIGHT',
-                  errorText: errorText,
-                  filled: true,
-                  fillColor: Colors.white,
-                  prefixIcon: const Icon(Icons.qr_code_2),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: const BorderSide(color: AppColors.blue, width: 1.6),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 14),
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: FilledButton(
-                  style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.blue,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  onPressed: submitCode,
-                  child: const Text(
-                    '카드 획득하기',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              SectionTitle(
-                title: '테스트 코드',
-                action: 'v0.3 local mock',
-              ),
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: sampleCodes.map((code) {
-                  return ActionChip(
-                    label: Text(
-                      code,
-                      style: const TextStyle(fontWeight: FontWeight.w900),
-                    ),
-                    onPressed: () {
-                      controller.text = code;
-                    },
-                  );
-                }).toList(),
-              ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 16),
               AppCard(
-                child: Row(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(Icons.collections_bookmark, color: AppColors.yellow),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        '현재 이 기기에 저장된 카드: ${collected.length}개',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w900,
-                          color: AppColors.text,
+                    const Text('미션 코드 입력', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: controller,
+                      textCapitalization: TextCapitalization.characters,
+                      decoration: InputDecoration(
+                        hintText: '예: BAEJAE-FOOD',
+                        errorText: errorMessage,
+                        filled: true,
+                        fillColor: Colors.grey.shade100,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(18),
+                          borderSide: BorderSide.none,
                         ),
                       ),
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 52,
+                      child: FilledButton.icon(
+                        style: FilledButton.styleFrom(
+                          backgroundColor: AppColors.blue,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                        ),
+                        onPressed: submitCode,
+                        icon: const Icon(Icons.check_circle_outline),
+                        label: const Text(
+                          '미션 완료하기',
+                          style: TextStyle(fontWeight: FontWeight.w900),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 52,
+                      child: OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppColors.darkBlue,
+                          side: const BorderSide(color: AppColors.darkBlue, width: 1.4),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const QRMockScreen(),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.qr_code_scanner),
+                        label: const Text(
+                          'QR 스캔 mock 보기',
+                          style: TextStyle(fontWeight: FontWeight.w900),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('빠른 테스트 코드', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
+                    const SizedBox(height: 10),
+                    const Text(
+                      '내부 테스트에서는 아래 코드를 눌러 바로 입력할 수 있습니다.',
+                      style: TextStyle(
+                        color: AppColors.sub,
+                        fontWeight: FontWeight.w700,
+                        height: 1.5,
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: codes.map((code) {
+                        return ActionChip(
+                          label: Text(
+                            code,
+                            style: const TextStyle(fontWeight: FontWeight.w900),
+                          ),
+                          onPressed: () => setQuickCode(code),
+                        );
+                      }).toList(),
                     ),
                   ],
                 ),
