@@ -546,6 +546,53 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
+          AppCard(
+            color: const Color(0xFFFFFBEB),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  '학과 나섬이 투어',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+                ),
+                const SizedBox(height: 6),
+                const Text(
+                  '학과 건물을 돌아다니며 학과별 나섬이를 수집하고 캠퍼스 구조를 익혀보세요.',
+                  style: TextStyle(
+                    color: AppColors.sub,
+                    fontWeight: FontWeight.w700,
+                    height: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: FilledButton.icon(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: AppColors.orange,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const DepartmentNasumiTourScreen(),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.school),
+                    label: const Text(
+                      '학과 나섬이 보러가기',
+                      style: TextStyle(fontWeight: FontWeight.w900),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
           const SectionTitle(title: '동아리 모집', action: '전체 보기'),
           const SizedBox(height: 12),
           const ClubCard(title: 'SkyEdge', category: '드론 · ROS2 · PX4 · 임베디드', deadline: 'D-3', place: '정보과학관'),
@@ -1156,6 +1203,233 @@ class CollectionScreen extends StatelessWidget {
   }
 }
 
+
+class DepartmentNasumiTourScreen extends StatelessWidget {
+  const DepartmentNasumiTourScreen({super.key});
+
+  final List<Map<String, String>> departments = const [
+    {
+      'name': '컴퓨터공학과 나섬이',
+      'code': 'CS-NASUMI',
+      'building': '정보과학관',
+      'desc': '코딩, 시스템, 앱, 임베디드에 관심 있는 학생들을 위한 학과 나섬이입니다.',
+      'office': '학과 사무실은 건물 안내 또는 학과 홈페이지를 참고하세요.',
+    },
+    {
+      'name': '인공지능학과 나섬이',
+      'code': 'AI-NASUMI',
+      'building': '정보과학관',
+      'desc': 'AI, 데이터, 모델링에 관심 있는 학생들을 위한 학과 나섬이입니다.',
+      'office': '학과 사무실/연구실 위치는 공식 안내 기준으로 확인합니다.',
+    },
+    {
+      'name': '게임공학과 나섬이',
+      'code': 'GAME-NASUMI',
+      'building': '콘텐츠 관련 건물',
+      'desc': '게임, 그래픽, 인터랙티브 콘텐츠를 좋아하는 학생들을 위한 나섬이입니다.',
+      'office': '정확한 위치는 학과 공식 안내를 따릅니다.',
+    },
+    {
+      'name': '경영학과 나섬이',
+      'code': 'BUSINESS-NASUMI',
+      'building': '경영 관련 건물',
+      'desc': '기획, 마케팅, 창업, 운영에 관심 있는 학생들을 위한 나섬이입니다.',
+      'office': '학과 사무실 위치는 공식 안내를 따릅니다.',
+    },
+    {
+      'name': '관광축제한류대학 나섬이',
+      'code': 'TOURISM-NASUMI',
+      'building': '관광축제한류대학 관련 건물',
+      'desc': '축제, 관광, 한류 콘텐츠를 좋아하는 학생들을 위한 나섬이입니다.',
+      'office': '학과 사무실 위치는 공식 안내를 따릅니다.',
+    },
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(Icons.arrow_back),
+                  ),
+                  const SizedBox(width: 4),
+                  const Expanded(
+                    child: Header(
+                      title: '학과 나섬이 투어',
+                      subtitle: '학과 건물을 탐험하고 나섬이를 수집하세요.',
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              AppCard(
+                color: AppColors.darkBlue,
+                child: Row(
+                  children: const [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '캠퍼스 공간 학습',
+                            style: TextStyle(color: Colors.white70, fontWeight: FontWeight.w800),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            '다른 학과 건물을\n돌아볼 명분을 만듭니다.',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 23,
+                              fontWeight: FontWeight.w900,
+                              height: 1.3,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            '신입생, 통학생, 기숙사생 모두에게 필요한 캠퍼스 탐험 기능입니다.',
+                            style: TextStyle(color: Colors.white70, fontWeight: FontWeight.w700, height: 1.5),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Nasumi(size: 92, label: '학과'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 18),
+              AppCard(
+                color: const Color(0xFFFFFBEB),
+                child: Row(
+                  children: const [
+                    Icon(Icons.info_outline, color: AppColors.orange),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'v0.7은 실시간 위치 추적 없이 코드 입력 기반으로 동작합니다. 학생 이동 동선은 서버에 저장하지 않습니다.',
+                        style: TextStyle(
+                          color: AppColors.text,
+                          fontWeight: FontWeight.w700,
+                          height: 1.5,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              const SectionTitle(title: '수집 가능한 학과 나섬이'),
+              const SizedBox(height: 12),
+              ...departments.map((department) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: DepartmentCard(department: department),
+                );
+              }),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class DepartmentCard extends StatelessWidget {
+  final Map<String, String> department;
+
+  const DepartmentCard({
+    super.key,
+    required this.department,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final name = department['name']!;
+    final code = department['code']!;
+    final building = department['building']!;
+    final desc = department['desc']!;
+    final office = department['office']!;
+
+    return AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Nasumi(size: 64, label: '학과'),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(name, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
+                    const SizedBox(height: 4),
+                    Text(building, style: const TextStyle(color: AppColors.sub, fontWeight: FontWeight.w700)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Text(
+            desc,
+            style: const TextStyle(color: AppColors.sub, fontWeight: FontWeight.w700, height: 1.5),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            office,
+            style: const TextStyle(color: AppColors.sub, fontWeight: FontWeight.w600, height: 1.5),
+          ),
+          const SizedBox(height: 14),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: AppColors.blue.withOpacity(0.08),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Text(
+              '수집 코드: $code',
+              style: const TextStyle(color: AppColors.blue, fontWeight: FontWeight.w900),
+            ),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            height: 48,
+            child: FilledButton.icon(
+              style: FilledButton.styleFrom(
+                backgroundColor: AppColors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18),
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const MissionCodeScreen()),
+                );
+              },
+              icon: const Icon(Icons.qr_code_2),
+              label: const Text(
+                '코드 입력하러 가기',
+                style: TextStyle(fontWeight: FontWeight.w900),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class ClubScreen extends StatelessWidget {
   const ClubScreen({super.key});
 
@@ -1367,6 +1641,36 @@ class _MissionCodeScreenState extends State<MissionCodeScreen> {
       'rarity': 'Badge',
       'desc': '캠퍼스 경보와 흡연구역 안내 미션을 완료해서 획득한 배지입니다.',
       'titleReward': '클린캠퍼스 참여자',
+    },
+    'CS-NASUMI': {
+      'title': '컴퓨터공학과 나섬이',
+      'rarity': 'Department',
+      'desc': '정보과학관에서 만날 수 있는 컴퓨터공학과 나섬이입니다.',
+      'titleReward': '코드 빌더',
+    },
+    'AI-NASUMI': {
+      'title': '인공지능학과 나섬이',
+      'rarity': 'Department',
+      'desc': 'AI와 데이터에 관심 있는 학생을 위한 인공지능학과 나섬이입니다.',
+      'titleReward': 'AI 탐험가',
+    },
+    'GAME-NASUMI': {
+      'title': '게임공학과 나섬이',
+      'rarity': 'Department',
+      'desc': '게임과 인터랙티브 콘텐츠를 좋아하는 학생을 위한 게임공학과 나섬이입니다.',
+      'titleReward': '캠퍼스 플레이어',
+    },
+    'BUSINESS-NASUMI': {
+      'title': '경영학과 나섬이',
+      'rarity': 'Department',
+      'desc': '비즈니스와 기획 감각을 가진 학생을 위한 경영학과 나섬이입니다.',
+      'titleReward': '비즈니스 탐험가',
+    },
+    'TOURISM-NASUMI': {
+      'title': '관광축제한류대학 나섬이',
+      'rarity': 'Department',
+      'desc': '축제, 관광, 한류 콘텐츠를 좋아하는 학생을 위한 학과 나섬이입니다.',
+      'titleReward': '캠퍼스 가이드',
     },
   };
 
