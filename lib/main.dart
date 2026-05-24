@@ -1946,6 +1946,231 @@ class _MyPageScreenState extends State<MyPageScreen> {
 }
 
 
+
+class AppStatusRoadmapScreen extends StatelessWidget {
+  const AppStatusRoadmapScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final done = [
+      'Splash / Login mock',
+      '홈 / 오늘의 Pick',
+      '학생식당 상세 / 혼잡도 mock',
+      '메뉴 카드 획득',
+      'QR 스캔 mock',
+      '코드 기반 미션',
+      '캠퍼스 도감',
+      '학과 나섬이 투어',
+      '동아리 공고관',
+      '관심 동아리 저장',
+      '개인정보 안내',
+      '로컬 데이터 초기화',
+      '테스터 피드백 허브',
+    ];
+
+    final notYet = [
+      '실제 학교 이메일 인증',
+      '실제 QR 카메라 스캔',
+      '실시간 위치 추적',
+      '실제 학생식당 데이터 연동',
+      '실제 동아리 공고 등록',
+      '관리자 콘솔',
+      '공식 학교 승인',
+      '나섬이 캐릭터 사용 허가 확인',
+      'Play Store 정식 배포 signing',
+    ];
+
+    final roadmap = [
+      {
+        'title': '1단계: 내부 테스트',
+        'desc': 'APK를 소수 재학생에게 전달해 설치 이유와 재방문 이유를 검증합니다.',
+      },
+      {
+        'title': '2단계: 학생식당 데이터 실험',
+        'desc': '메뉴, 혼잡도, 만족도 흐름이 실제 사용 이유가 되는지 확인합니다.',
+      },
+      {
+        'title': '3단계: 나섬이/도감 루프 강화',
+        'desc': '학과별 나섬이, 건물 미션, 칭호, 랭킹 등 재방문 요소를 보강합니다.',
+      },
+      {
+        'title': '4단계: 학교/동아리 협의',
+        'desc': '학교명, 캐릭터, 동아리 공고 운영 주체, 개인정보 정책을 정리합니다.',
+      },
+      {
+        'title': '5단계: Play Store 내부 테스트',
+        'desc': 'AAB, 개인정보처리방침 URL, 앱 아이콘, 스크린샷을 준비해 내부 테스트를 진행합니다.',
+      },
+    ];
+
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IconButton(
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(Icons.arrow_back),
+              ),
+              const SizedBox(height: 8),
+              const Header(
+                title: '앱 상태 / 로드맵',
+                subtitle: '현재 되는 것과 아직 안 되는 것을 명확히 보여줍니다.',
+              ),
+              const SizedBox(height: 18),
+              AppCard(
+                color: AppColors.darkBlue,
+                child: Row(
+                  children: const [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '현재 단계',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            '내부 테스트 가능한\nFlutter MVP',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.w900,
+                              height: 1.3,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            '공식 학교 앱이 아니라 사용성 검증용 MVP입니다.',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w700,
+                              height: 1.45,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Nasumi(size: 84, label: 'MVP'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '현재 구현된 것',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+                    ),
+                    const SizedBox(height: 12),
+                    ...done.map((item) => _StatusLine(icon: Icons.check_circle, text: item)),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '아직 구현되지 않은 것',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      '아래 기능은 실제 출시 전에 별도 구현, 권한 검토, 학교 협의가 필요합니다.',
+                      style: TextStyle(
+                        color: AppColors.sub,
+                        fontWeight: FontWeight.w700,
+                        height: 1.5,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    ...notYet.map((item) => _StatusLine(icon: Icons.pending_outlined, text: item)),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              ...roadmap.map((step) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: AppCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          step['title']!,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          step['desc']!,
+                          style: const TextStyle(
+                            color: AppColors.sub,
+                            fontWeight: FontWeight.w700,
+                            height: 1.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _StatusLine extends StatelessWidget {
+  const _StatusLine({
+    required this.icon,
+    required this.text,
+  });
+
+  final IconData icon;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 9),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 19, color: AppColors.blue),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(
+                color: AppColors.sub,
+                fontWeight: FontWeight.w700,
+                height: 1.4,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
 class TesterFeedbackScreen extends StatelessWidget {
   const TesterFeedbackScreen({super.key});
 
