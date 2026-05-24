@@ -17,5 +17,7 @@ android/app/release
 .vscode/
 *.iml
 flutter_*.log
-flutter_*.log
-flutter_*.log
+
+# Flutter / Android build artifacts
+*.apk
+*.aab
