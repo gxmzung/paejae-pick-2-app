@@ -215,6 +215,25 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 22),
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: TextButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const PrivacyGuideScreen(),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.privacy_tip_outlined),
+                  label: const Text(
+                    '개인정보 및 로컬 저장 안내 보기',
+                    style: TextStyle(fontWeight: FontWeight.w900),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
               const AppCard(
                 child: Row(
                   children: [
@@ -1787,6 +1806,51 @@ class _MyPageScreenState extends State<MyPageScreen> {
     });
   }
 
+  Future<void> resetLocalData() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.remove('favorite_clubs');
+    await prefs.remove('collected_cards');
+
+    await loadStats();
+
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('로컬 저장 데이터를 초기화했습니다.'),
+      ),
+    );
+  }
+
+  Future<void> confirmReset() async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('로컬 데이터 초기화'),
+          content: const Text(
+            '이 기기에 저장된 도감 카드와 관심 동아리 정보가 삭제됩니다. 서버 데이터는 사용하지 않으므로 현재는 이 기기에서만 초기화됩니다.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('취소'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('초기화'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result == true) {
+      await resetLocalData();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -1830,6 +1894,210 @@ class _MyPageScreenState extends State<MyPageScreen> {
               ),
             ),
           ),
+          const SizedBox(height: 10),
+          SizedBox(
+            width: double.infinity,
+            height: 52,
+            child: FilledButton.icon(
+              style: FilledButton.styleFrom(
+                backgroundColor: AppColors.darkBlue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18),
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const PrivacyGuideScreen(),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.privacy_tip_outlined),
+              label: const Text(
+                '개인정보 / 로컬 저장 안내',
+                style: TextStyle(fontWeight: FontWeight.w900),
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          SizedBox(
+            width: double.infinity,
+            height: 52,
+            child: OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.red,
+                side: const BorderSide(color: AppColors.red, width: 1.4),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18),
+                ),
+              ),
+              onPressed: confirmReset,
+              icon: const Icon(Icons.delete_outline),
+              label: const Text(
+                '로컬 데이터 초기화',
+                style: TextStyle(fontWeight: FontWeight.w900),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class PrivacyGuideScreen extends StatelessWidget {
+  const PrivacyGuideScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IconButton(
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(Icons.arrow_back),
+              ),
+              const SizedBox(height: 8),
+              const Header(
+                title: '개인정보 안내',
+                subtitle: 'v1.0은 서버 저장 없이 로컬 중심으로 동작합니다.',
+              ),
+              const SizedBox(height: 20),
+              AppCard(
+                color: AppColors.darkBlue,
+                child: Row(
+                  children: const [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '최소 수집 원칙',
+                            style: TextStyle(color: Colors.white70, fontWeight: FontWeight.w800),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            '먼저 유용성을 증명하고,
+민감한 정보는 나중에 필요한 만큼만.',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w900,
+                              height: 1.35,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Nasumi(size: 88, label: '보안'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              const PrivacySection(
+                title: 'v1.0에서 저장하는 것',
+                items: [
+                  '이 기기 안의 도감 수집 상태',
+                  '이 기기 안의 관심 동아리 상태',
+                  '코드 기반 미션 완료 상태',
+                  '메뉴 카드 획득 상태',
+                ],
+              ),
+              const SizedBox(height: 14),
+              const PrivacySection(
+                title: 'v1.0에서 저장하지 않는 것',
+                items: [
+                  '실명',
+                  '정확한 학번',
+                  '전화번호',
+                  '실시간 위치',
+                  '개인별 식당 방문 기록 서버 저장',
+                  '시설 신고자 신원',
+                  '교수님 개인 연구실 방문 기록',
+                ],
+              ),
+              const SizedBox(height: 14),
+              const PrivacySection(
+                title: '향후 인증 계획',
+                items: [
+                  'Firebase 또는 Supabase 인증 검토',
+                  '학교 이메일 인증 검토',
+                  '닉네임 / 학과 / 학년 중심의 최소 프로필',
+                  '서버 동기화는 사용자 반응 확인 후 도입',
+                ],
+              ),
+              const SizedBox(height: 14),
+              AppCard(
+                color: const Color(0xFFFFFBEB),
+                child: Row(
+                  children: const [
+                    Icon(Icons.warning_amber_rounded, color: AppColors.orange),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        '배재대학교 명칭과 나섬이 캐릭터 사용은 공식 출시 전 학교 측 확인이 필요합니다.',
+                        style: TextStyle(
+                          color: AppColors.text,
+                          fontWeight: FontWeight.w800,
+                          height: 1.5,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class PrivacySection extends StatelessWidget {
+  final String title;
+  final List<String> items;
+
+  const PrivacySection({
+    super.key,
+    required this.title,
+    required this.items,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
+          const SizedBox(height: 12),
+          ...items.map((item) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('• ', style: TextStyle(color: AppColors.blue, fontWeight: FontWeight.w900)),
+                  Expanded(
+                    child: Text(
+                      item,
+                      style: const TextStyle(
+                        color: AppColors.sub,
+                        fontWeight: FontWeight.w700,
+                        height: 1.4,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
         ],
       ),
     );
