@@ -1433,28 +1433,359 @@ class DepartmentCard extends StatelessWidget {
 class ClubScreen extends StatelessWidget {
   const ClubScreen({super.key});
 
+  static const List<Map<String, String>> clubs = [
+    {
+      'title': 'SkyEdge',
+      'category': '드론 · ROS2 · PX4 · 임베디드',
+      'deadline': 'D-3',
+      'place': '정보과학관',
+      'period': '5.20 ~ 6.10',
+      'target': '1~2학년 우선, 개발·하드웨어 관심자',
+      'day': '주 1회 회의 + 프로젝트별 실습',
+      'beginner': '가능',
+      'skills': '성실함, GitHub 사용 의지, 실습 참여',
+      'intro': 'SkyEdge는 드론, ROS2, PX4, 임베디드, 관제 시스템을 다루는 프로젝트형 동아리입니다.',
+      'apply': 'Google Form mock',
+      'contact': 'Open KakaoTalk mock',
+    },
+    {
+      'title': '배재 방송국',
+      'category': '방송 · 영상 제작',
+      'deadline': 'D-7',
+      'place': '방송센터',
+      'period': '5.24 ~ 6.14',
+      'target': '영상, 촬영, 편집, 아나운싱에 관심 있는 학생',
+      'day': '주 1회 정기 활동',
+      'beginner': '가능',
+      'skills': '책임감, 행사 참여, 콘텐츠 제작 관심',
+      'intro': '교내 행사와 학생 콘텐츠를 기록하고 제작하는 방송·영상 중심 동아리입니다.',
+      'apply': 'Instagram DM mock',
+      'contact': 'Open KakaoTalk mock',
+    },
+    {
+      'title': 'GoPaejae',
+      'category': '봉사 · 지역사회 · 기획',
+      'deadline': 'D-5',
+      'place': '학생회관',
+      'period': '5.22 ~ 6.12',
+      'target': '봉사와 행사 기획에 관심 있는 재학생',
+      'day': '격주 활동',
+      'beginner': '가능',
+      'skills': '기획력, 협업, 꾸준한 참여',
+      'intro': '지역사회와 학교 행사를 연결하는 봉사·기획 중심 동아리입니다.',
+      'apply': 'Google Form mock',
+      'contact': 'Club contact mock',
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return const SingleChildScrollView(
-      padding: EdgeInsets.fromLTRB(20, 18, 20, 24),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Header(title: '동아리 공고관', subtitle: '익명 게시판이 아닌, 공식형 동아리 모집 공고 모음입니다.'),
-          SizedBox(height: 18),
-          ClubCard(title: 'SkyEdge', category: '드론 · ROS2 · PX4 · 임베디드', deadline: 'D-3', place: '정보과학관'),
-          SizedBox(height: 12),
-          ClubCard(title: '배재 방송국', category: '방송 · 영상 제작', deadline: 'D-7', place: '방송센터'),
-          SizedBox(height: 12),
-          ClubCard(title: 'GoPaejae', category: '봉사 · 지역사회 · 기획', deadline: 'D-5', place: '학생회관'),
+          const Header(
+            title: '동아리 공고관',
+            subtitle: '익명 게시판이 아닌, 공식형 동아리 모집 공고 모음입니다.',
+          ),
+          const SizedBox(height: 18),
+          AppCard(
+            color: const Color(0xFFEFF6FF),
+            child: Row(
+              children: const [
+                Icon(Icons.campaign_outlined, color: AppColors.blue),
+                SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    '동아리 공고관은 댓글과 익명 게시판 없이, 모집 정보만 구조화해서 보여줍니다.',
+                    style: TextStyle(
+                      color: AppColors.text,
+                      fontWeight: FontWeight.w700,
+                      height: 1.5,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 18),
+          ...clubs.map((club) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: ClubCard(
+                title: club['title']!,
+                category: club['category']!,
+                deadline: club['deadline']!,
+                place: club['place']!,
+                club: club,
+              ),
+            );
+          }),
         ],
       ),
     );
   }
 }
 
-class MyPageScreen extends StatelessWidget {
+class ClubDetailScreen extends StatefulWidget {
+  final Map<String, String> club;
+
+  const ClubDetailScreen({
+    super.key,
+    required this.club,
+  });
+
+  @override
+  State<ClubDetailScreen> createState() => _ClubDetailScreenState();
+}
+
+class _ClubDetailScreenState extends State<ClubDetailScreen> {
+  bool isFavorite = false;
+
+  @override
+  void initState() {
+    super.initState();
+    loadFavorite();
+  }
+
+  Future<void> loadFavorite() async {
+    final prefs = await SharedPreferences.getInstance();
+    final favorites = prefs.getStringList('favorite_clubs') ?? [];
+    setState(() {
+      isFavorite = favorites.contains(widget.club['title']);
+    });
+  }
+
+  Future<void> toggleFavorite() async {
+    final prefs = await SharedPreferences.getInstance();
+    final favorites = prefs.getStringList('favorite_clubs') ?? [];
+    final title = widget.club['title']!;
+
+    if (favorites.contains(title)) {
+      favorites.remove(title);
+    } else {
+      favorites.add(title);
+    }
+
+    await prefs.setStringList('favorite_clubs', favorites);
+
+    setState(() {
+      isFavorite = favorites.contains(title);
+    });
+
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(isFavorite ? '$title 관심 동아리에 저장했습니다.' : '$title 관심 동아리에서 제거했습니다.'),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final club = widget.club;
+
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IconButton(
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(Icons.arrow_back),
+              ),
+              const SizedBox(height: 8),
+              AppCard(
+                color: AppColors.blue,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            '모집 중',
+                            style: TextStyle(color: Colors.white70, fontWeight: FontWeight.w800),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            club['title']!,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 28,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            club['category']!,
+                            style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.w700),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Nasumi(size: 88, label: '동아리'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('모집 정보', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
+                    const SizedBox(height: 12),
+                    ProfileRow(label: '모집 기간', value: club['period']!),
+                    ProfileRow(label: '모집 대상', value: club['target']!),
+                    ProfileRow(label: '활동 장소', value: club['place']!),
+                    ProfileRow(label: '활동 요일', value: club['day']!),
+                    ProfileRow(label: '초보 가능', value: club['beginner']!),
+                    ProfileRow(label: '필요 역량', value: club['skills']!),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('동아리 소개', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
+                    const SizedBox(height: 10),
+                    Text(
+                      club['intro']!,
+                      style: const TextStyle(
+                        color: AppColors.sub,
+                        fontWeight: FontWeight.w700,
+                        height: 1.6,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                color: const Color(0xFFFFFBEB),
+                child: Row(
+                  children: const [
+                    Icon(Icons.info_outline, color: AppColors.orange),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'v0.8에서는 실제 외부 링크 대신 mock 링크로 표시합니다. 실제 출시 전에는 동아리 대표 또는 관리자 승인 방식이 필요합니다.',
+                        style: TextStyle(
+                          color: AppColors.text,
+                          fontWeight: FontWeight.w700,
+                          height: 1.5,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 18),
+              SizedBox(
+                width: double.infinity,
+                height: 54,
+                child: FilledButton.icon(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: isFavorite ? AppColors.green : AppColors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  onPressed: toggleFavorite,
+                  icon: Icon(isFavorite ? Icons.check_circle : Icons.bookmark_add),
+                  label: Text(
+                    isFavorite ? '관심 동아리 저장됨' : '관심 동아리 저장',
+                    style: const TextStyle(fontWeight: FontWeight.w900),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                width: double.infinity,
+                height: 54,
+                child: OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.blue,
+                    side: const BorderSide(color: AppColors.blue, width: 1.4),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('지원 링크: ${club['apply']}')),
+                    );
+                  },
+                  icon: const Icon(Icons.open_in_new),
+                  label: const Text(
+                    '지원 링크 열기 mock',
+                    style: TextStyle(fontWeight: FontWeight.w900),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                width: double.infinity,
+                height: 54,
+                child: OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.darkBlue,
+                    side: const BorderSide(color: AppColors.darkBlue, width: 1.4),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('문의 링크: ${club['contact']}')),
+                    );
+                  },
+                  icon: const Icon(Icons.chat_bubble_outline),
+                  label: const Text(
+                    '문의 링크 열기 mock',
+                    style: TextStyle(fontWeight: FontWeight.w900),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class MyPageScreen extends StatefulWidget {
   const MyPageScreen({super.key});
+
+  @override
+  State<MyPageScreen> createState() => _MyPageScreenState();
+}
+
+class _MyPageScreenState extends State<MyPageScreen> {
+  int favoriteClubCount = 0;
+  int collectedCardCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    loadStats();
+  }
+
+  Future<void> loadStats() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      favoriteClubCount = (prefs.getStringList('favorite_clubs') ?? []).length;
+      collectedCardCount = (prefs.getStringList('collected_cards') ?? []).length;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1470,13 +1801,33 @@ class MyPageScreen extends StatelessWidget {
           const SizedBox(height: 24),
           AppCard(
             child: Column(
-              children: const [
-                ProfileRow(label: '도감 완성도', value: '37%'),
-                ProfileRow(label: '획득 카드', value: '45개'),
-                ProfileRow(label: '완료 미션', value: '18개'),
-                ProfileRow(label: '대표 칭호', value: '신입 탐험가'),
-                ProfileRow(label: '관심 동아리', value: '3개'),
+              children: [
+                const ProfileRow(label: '도감 완성도', value: '로컬 기준'),
+                ProfileRow(label: '로컬 획득 카드', value: '$collectedCardCount개'),
+                const ProfileRow(label: '완료 미션', value: '코드 기반'),
+                const ProfileRow(label: '대표 칭호', value: '신입 탐험가'),
+                ProfileRow(label: '관심 동아리', value: '$favoriteClubCount개'),
               ],
+            ),
+          ),
+          const SizedBox(height: 14),
+          SizedBox(
+            width: double.infinity,
+            height: 52,
+            child: OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.blue,
+                side: const BorderSide(color: AppColors.blue, width: 1.4),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18),
+                ),
+              ),
+              onPressed: loadStats,
+              icon: const Icon(Icons.refresh),
+              label: const Text(
+                '로컬 상태 새로고침',
+                style: TextStyle(fontWeight: FontWeight.w900),
+              ),
             ),
           ),
         ],
@@ -1535,6 +1886,7 @@ class ClubCard extends StatelessWidget {
   final String category;
   final String deadline;
   final String place;
+  final Map<String, String>? club;
 
   const ClubCard({
     super.key,
@@ -1542,11 +1894,12 @@ class ClubCard extends StatelessWidget {
     required this.category,
     required this.deadline,
     required this.place,
+    this.club,
   });
 
   @override
   Widget build(BuildContext context) {
-    return AppCard(
+    final card = AppCard(
       child: Row(
         children: [
           Container(
@@ -1575,6 +1928,21 @@ class ClubCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+
+    if (club == null) {
+      return card;
+    }
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => ClubDetailScreen(club: club!),
+          ),
+        );
+      },
+      child: card,
     );
   }
 }
