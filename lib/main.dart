@@ -583,26 +583,394 @@ class CafeteriaMiniCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('학생식당', style: TextStyle(fontWeight: FontWeight.w900)),
-          const SizedBox(height: 10),
-          const Text('오늘 메뉴', style: TextStyle(color: AppColors.sub, fontSize: 12)),
-          const SizedBox(height: 2),
-          const Text('돈육폭찹 정식', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
-          const SizedBox(height: 10),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              color: AppColors.green.withOpacity(0.12),
-              borderRadius: BorderRadius.circular(999),
-            ),
-            child: const Text('혼잡도 여유', style: TextStyle(color: AppColors.green, fontWeight: FontWeight.w900)),
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => const CafeteriaDetailScreen(),
           ),
-        ],
+        );
+      },
+      child: AppCard(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('학생식당', style: TextStyle(fontWeight: FontWeight.w900)),
+            const SizedBox(height: 10),
+            const Text('오늘 메뉴', style: TextStyle(color: AppColors.sub, fontSize: 12)),
+            const SizedBox(height: 2),
+            const Text('돈육폭찹 정식', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: AppColors.green.withOpacity(0.12),
+                borderRadius: BorderRadius.circular(999),
+              ),
+              child: const Text('혼잡도 보통', style: TextStyle(color: AppColors.green, fontWeight: FontWeight.w900)),
+            ),
+          ],
+        ),
       ),
+    );
+  }
+}
+
+
+class CafeteriaDetailScreen extends StatefulWidget {
+  const CafeteriaDetailScreen({super.key});
+
+  @override
+  State<CafeteriaDetailScreen> createState() => _CafeteriaDetailScreenState();
+}
+
+class _CafeteriaDetailScreenState extends State<CafeteriaDetailScreen> {
+  String selectedFeedback = '';
+  bool menuCardSaved = false;
+
+  final String menuCardTitle = '돈육폭찹 정식 카드';
+
+  @override
+  void initState() {
+    super.initState();
+    loadMenuCardState();
+  }
+
+  Future<void> loadMenuCardState() async {
+    final prefs = await SharedPreferences.getInstance();
+    final current = prefs.getStringList('collected_cards') ?? [];
+    setState(() {
+      menuCardSaved = current.contains(menuCardTitle);
+    });
+  }
+
+  Future<void> acquireMenuCard() async {
+    final prefs = await SharedPreferences.getInstance();
+    final current = prefs.getStringList('collected_cards') ?? [];
+
+    if (!current.contains(menuCardTitle)) {
+      current.add(menuCardTitle);
+      await prefs.setStringList('collected_cards', current);
+    }
+
+    setState(() {
+      menuCardSaved = true;
+    });
+
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('돈육폭찹 정식 카드를 획득했습니다.'),
+      ),
+    );
+  }
+
+  String congestionStatus() {
+    final now = DateTime.now();
+    final minutes = now.hour * 60 + now.minute;
+
+    final startLunch = 11 * 60 + 30;
+    final peakStart = 12 * 60;
+    final peakEnd = 12 * 60 + 40;
+    final lateLunch = 13 * 60 + 10;
+
+    if (minutes < startLunch) return '준비 중';
+    if (minutes >= peakStart && minutes <= peakEnd) return '혼잡';
+    if (minutes <= lateLunch) return '보통';
+    return '여유';
+  }
+
+  Color congestionColor(String status) {
+    switch (status) {
+      case '혼잡':
+        return AppColors.red;
+      case '보통':
+        return AppColors.orange;
+      case '여유':
+        return AppColors.green;
+      default:
+        return AppColors.sub;
+    }
+  }
+
+  String waitingTime(String status) {
+    switch (status) {
+      case '혼잡':
+        return '약 12~15분';
+      case '보통':
+        return '약 5~7분';
+      case '여유':
+        return '거의 없음';
+      default:
+        return '운영 전';
+    }
+  }
+
+  String recommendedTime(String status) {
+    switch (status) {
+      case '혼잡':
+        return '12:40 이후 방문 추천';
+      case '보통':
+        return '지금 방문 가능';
+      case '여유':
+        return '지금 바로 방문 추천';
+      default:
+        return '11:30 이후 확인';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final status = congestionStatus();
+    final color = congestionColor(status);
+
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(Icons.arrow_back),
+                  ),
+                  const SizedBox(width: 4),
+                  const Expanded(
+                    child: Header(
+                      title: '학생식당',
+                      subtitle: '오늘 메뉴와 혼잡도를 확인하세요.',
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              AppCard(
+                color: AppColors.blue,
+                child: Row(
+                  children: [
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '오늘의 학생식당',
+                            style: TextStyle(color: Colors.white70, fontWeight: FontWeight.w800),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            '돈육폭찹 정식',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 26,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                          SizedBox(height: 6),
+                          Text(
+                            '운영 시간 11:30 ~ 13:30',
+                            style: TextStyle(color: Colors.white70, fontWeight: FontWeight.w700),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Nasumi(size: 92, label: '식당'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '현재 혼잡도',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+                    ),
+                    const SizedBox(height: 14),
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: color.withOpacity(0.12),
+                            borderRadius: BorderRadius.circular(999),
+                          ),
+                          child: Text(
+                            status,
+                            style: TextStyle(
+                              color: color,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            '예상 대기 시간: ${waitingTime(status)}',
+                            style: const TextStyle(
+                              color: AppColors.sub,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppColors.green.withOpacity(0.08),
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                      child: Text(
+                        recommendedTime(status),
+                        style: const TextStyle(
+                          color: AppColors.green,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '오늘 메뉴 정보',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+                    ),
+                    const SizedBox(height: 14),
+                    const ProfileRow(label: '메뉴', value: '돈육폭찹 정식'),
+                    const ProfileRow(label: '예상 가격', value: '학생식당 기준'),
+                    const ProfileRow(label: '메뉴 카드', value: '획득 가능'),
+                    const ProfileRow(label: '식당 나섬이', value: '출현 중'),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 54,
+                      child: FilledButton.icon(
+                        style: FilledButton.styleFrom(
+                          backgroundColor: menuCardSaved ? AppColors.green : AppColors.blue,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        onPressed: menuCardSaved ? null : acquireMenuCard,
+                        icon: Icon(menuCardSaved ? Icons.check_circle : Icons.collections_bookmark),
+                        label: Text(
+                          menuCardSaved ? '메뉴 카드 획득 완료' : '오늘의 메뉴 카드 받기',
+                          style: const TextStyle(fontWeight: FontWeight.w900),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '메뉴 만족도',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'v0.5에서는 서버 저장 없이 화면 상태만 반영합니다. 이후 익명 집계 방식으로 확장할 수 있습니다.',
+                      style: TextStyle(
+                        color: AppColors.sub,
+                        fontWeight: FontWeight.w700,
+                        height: 1.5,
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        feedbackChip('맛있어요'),
+                        feedbackChip('보통이에요'),
+                        feedbackChip('아쉬워요'),
+                        feedbackChip('줄이 길어요'),
+                        feedbackChip('다시 먹고 싶어요'),
+                      ],
+                    ),
+                    if (selectedFeedback.isNotEmpty) ...[
+                      const SizedBox(height: 14),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: AppColors.blue.withOpacity(0.08),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Text(
+                          '선택한 의견: $selectedFeedback',
+                          style: const TextStyle(
+                            color: AppColors.blue,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                color: const Color(0xFFFFFBEB),
+                child: Row(
+                  children: const [
+                    Icon(Icons.lightbulb_outline, color: AppColors.orange),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        '학생식당은 배재Pick을 매일 열게 만드는 핵심 진입점입니다. 이후 CityBrain API와 연결해 실제 혼잡도와 운영 데이터를 반영할 수 있습니다.',
+                        style: TextStyle(
+                          color: AppColors.text,
+                          fontWeight: FontWeight.w700,
+                          height: 1.5,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget feedbackChip(String label) {
+    final selected = selectedFeedback == label;
+
+    return ChoiceChip(
+      label: Text(
+        label,
+        style: TextStyle(
+          fontWeight: FontWeight.w900,
+          color: selected ? Colors.white : AppColors.text,
+        ),
+      ),
+      selected: selected,
+      selectedColor: AppColors.blue,
+      onSelected: (_) {
+        setState(() {
+          selectedFeedback = label;
+        });
+      },
     );
   }
 }
