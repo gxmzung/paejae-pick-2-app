@@ -1945,6 +1945,204 @@ class _MyPageScreenState extends State<MyPageScreen> {
   }
 }
 
+
+class TesterFeedbackScreen extends StatelessWidget {
+  const TesterFeedbackScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final sections = [
+      {
+        'title': '1. 설치 이유',
+        'items': [
+          '학생식당 정보 때문에 앱을 열 이유가 있는가?',
+          '오늘 메뉴, 혼잡도, 추천 방문 시간이 실제로 필요해 보이는가?',
+          '학생식당이 첫 진입점으로 충분한가?',
+        ],
+      },
+      {
+        'title': '2. 재방문 이유',
+        'items': [
+          '나섬이 도감 수집이 다시 들어오게 만드는가?',
+          '미션 코드 입력 흐름이 이해하기 쉬운가?',
+          'QR 스캔 mock이 실제 기능으로 바뀌면 쓸 것 같은가?',
+        ],
+      },
+      {
+        'title': '3. 캠퍼스 탐험',
+        'items': [
+          '학과 나섬이 투어가 학교 구조를 익히는 데 도움이 되는가?',
+          '신입생, 통학생, 기숙사생에게 실제 가치가 있는가?',
+          '교수님 연구실/학과 사무실 안내까지 확장할 필요가 있는가?',
+        ],
+      },
+      {
+        'title': '4. 동아리 공고관',
+        'items': [
+          '동아리 모집 정보가 게시판보다 정리되어 보이는가?',
+          '익명 댓글 없이 공고형 구조만 있는 것이 더 나은가?',
+          '동아리 운영진이 직접 올릴 만한 구조인가?',
+        ],
+      },
+      {
+        'title': '5. 신뢰 / 개인정보',
+        'items': [
+          '서버 없이 로컬 저장 중심이라는 설명이 안심되는가?',
+          '학교 이메일 인증은 꼭 필요해 보이는가?',
+          '공식 앱이 아니라 MVP라는 점이 명확한가?',
+        ],
+      },
+    ];
+
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IconButton(
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(Icons.arrow_back),
+              ),
+              const SizedBox(height: 8),
+              const Header(
+                title: '테스트 피드백',
+                subtitle: '내부 테스터가 봐야 할 핵심 질문입니다.',
+              ),
+              const SizedBox(height: 18),
+              AppCard(
+                color: AppColors.darkBlue,
+                child: Row(
+                  children: const [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'v1.7 Internal Test Hub',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            '완성도보다 중요한 건\n계속 쓸 이유가 있는지입니다.',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w900,
+                              height: 1.35,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Nasumi(size: 82, label: 'QA'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      '테스트 기준',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      '이 앱은 아직 공식 학교 앱이 아닙니다. 실제 학교 데이터와 연동된 완성품도 아닙니다. 지금 확인할 것은 기능의 완성도가 아니라, 배재대 학생이 설치하고 다시 열 이유가 있는지입니다.',
+                      style: TextStyle(
+                        color: AppColors.sub,
+                        fontWeight: FontWeight.w700,
+                        height: 1.6,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              ...sections.map((section) {
+                final items = section['items'] as List<String>;
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 14),
+                  child: AppCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          section['title'] as String,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        ...items.map(
+                          (item) => Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text('• ', style: TextStyle(fontWeight: FontWeight.w900)),
+                                Expanded(
+                                  child: Text(
+                                    item,
+                                    style: const TextStyle(
+                                      color: AppColors.sub,
+                                      fontWeight: FontWeight.w700,
+                                      height: 1.45,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+              const SizedBox(height: 6),
+              AppCard(
+                color: AppColors.blue,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      '최종 질문',
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      '이 앱을 실제로 설치해서 계속 쓸 이유가 있는가?',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w900,
+                        height: 1.35,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
 class PrivacyGuideScreen extends StatelessWidget {
   const PrivacyGuideScreen({super.key});
 
