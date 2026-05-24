@@ -6,7 +6,7 @@ It connects cafeteria information, campus exploration, Nasumi collection, code-b
 
 ## Current Version
 
-`v1.0-release-candidate`
+`v1.4-ui-screenshot-prep`
 
 ## Core Strategy
 
@@ -91,6 +91,22 @@ The reason to return is Nasumi collection, campus missions, department tours, an
 - Release candidate documentation
 - Store-readiness direction
 - Privacy-light local-first strategy
+
+
+### v1.3 QR Mission Polish
+
+- QR scan mock screen
+- Improved mission code entry
+- Quick internal test code buttons
+- Better success/failure feedback
+- Mission code list for internal testing
+
+### v1.4 UI / Screenshot Prep
+
+- Screenshot target list
+- Internal test demo flow
+- Release-facing demo scenario
+- Build verification for presentation
 
 ## Tech Stack
 
