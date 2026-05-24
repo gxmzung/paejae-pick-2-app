@@ -6,7 +6,7 @@ It connects cafeteria information, campus exploration, Nasumi collection, code-b
 
 ## Current Version
 
-`v1.4-ui-screenshot-prep`
+`v1.5-internal-test-package`
 
 ## Core Strategy
 
@@ -108,7 +108,15 @@ The reason to return is Nasumi collection, campus missions, department tours, an
 - Release-facing demo scenario
 - Build verification for presentation
 
-## Tech Stack
+
+### v1.5 Internal Test Package
+
+- Internal tester guide
+- Android APK installation guide
+- Feedback form questions
+- Release package notes
+- Internal testing preparation
+\n## Tech Stack
 
 - Flutter
 - Dart
