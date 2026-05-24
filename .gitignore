@@ -16,3 +16,6 @@ android/app/release
 .idea/
 .vscode/
 *.iml
+flutter_*.log
+flutter_*.log
+flutter_*.log

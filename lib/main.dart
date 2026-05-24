@@ -1982,8 +1982,7 @@ class PrivacyGuideScreen extends StatelessWidget {
                           ),
                           SizedBox(height: 8),
                           Text(
-                            '먼저 유용성을 증명하고,
-민감한 정보는 나중에 필요한 만큼만.',
+                            '먼저 유용성을 증명하고,\n민감한 정보는 나중에 필요한 만큼만.',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 22,

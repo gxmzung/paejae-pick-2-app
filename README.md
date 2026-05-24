@@ -1,12 +1,12 @@
 # Paejae Pick 2.0
 
-Paejae Pick 2.0 is a Flutter-based smart campus app concept for Paichai University students.
+Paejae Pick 2.0 is a Flutter-based smart campus MVP app concept for Paichai University students.
 
-The app connects cafeteria information, campus exploration, Nasumi collection, code-based missions, club notices, and future CityBrain operation data.
+It connects cafeteria information, campus exploration, Nasumi collection, code-based missions, department tours, club notices, and future CityBrain operation data.
 
 ## Current Version
 
-`v0.6-release-prd`
+`v1.0-release-candidate`
 
 ## Core Strategy
 
@@ -14,7 +14,7 @@ The first reason to install Paejae Pick is cafeteria information.
 
 The reason to return is Nasumi collection, campus missions, department tours, and club notices.
 
-## Implemented So Far
+## Implemented Features
 
 ### v0.1 Flutter MVP Shell
 
@@ -64,6 +64,34 @@ The reason to return is Nasumi collection, campus missions, department tours, an
 - Cost and privacy plan
 - Android release readiness checklist
 
+### v0.7 Department Nasumi Tour
+
+- Department Nasumi Tour screen
+- Department mission codes
+- Department building information
+- Local collection integration
+
+### v0.8 Club Notice Detail
+
+- Club notice detail screen
+- Structured recruitment information
+- Favorite club local storage
+- My Page favorite count integration
+
+### v0.9 Auth and Privacy Design
+
+- Privacy guide screen
+- Local data reset
+- Login privacy notice link
+- My Page privacy menu
+
+### v1.0 Release Candidate
+
+- Android-first MVP scope
+- Release candidate documentation
+- Store-readiness direction
+- Privacy-light local-first strategy
+
 ## Tech Stack
 
 - Flutter
@@ -72,8 +100,41 @@ The reason to return is Nasumi collection, campus missions, department tours, an
 - Android first
 - iOS planned later
 
-## v1.0 Release Direction
+## v1.0 Scope
+
+Included:
+
+- Splash / Login mock
+- Home
+- Cafeteria detail
+- Code-based mission
+- Collection / card detail
+- Department Nasumi Tour
+- Club notice detail
+- My Page
+- Privacy guide
+- Local data reset
+
+Excluded from v1.0:
+
+- Real school email authentication
+- Real QR camera scanner
+- Firebase/Supabase sync
+- Real-time location tracking
+- Admin console
+- Official school data integration
+- POS/kiosk integration
+- YOLO congestion integration
+
+## Release Direction
 
 v1.0 targets Android internal testing first.
 
 The app intentionally avoids heavy backend usage and sensitive personal data storage in the early stage.
+
+## Test Focus
+
+- Does cafeteria information create a reason to install?
+- Does Nasumi collection create a reason to return?
+- Does department tour help students learn campus structure?
+- Does the club notice hall feel more structured than scattered posts?
