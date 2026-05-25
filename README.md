@@ -296,6 +296,14 @@ The reason to return is Nasumi collection, campus missions, department tours, an
 - Shows contest notices, role tags, and team recruitment cards
 - Adds TeamLink entry point from Participation Hub
 - Frames TeamLink as a contest participation and cross-major collaboration feature
+\n
+### v4.3 TeamLink Official Notice Source
+
+- Adds official notice source rule for TeamLink
+- Connects TeamLink direction to the university general notice board
+- Separates official contest notices from student-created team recruitment posts
+- Adds notice collection and verification rules
+- Prepares TeamLink recruitment detail / creation flow for v4.4
 \n## Tech Stack
 
 - Flutter

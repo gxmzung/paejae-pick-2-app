@@ -3466,6 +3466,41 @@ class TeamLinkScreen extends StatelessWidget {
                   ],
                 ),
               ),
+              AppCard(
+                color: AppColors.lightBlue,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      '공식 공고 출처',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.darkBlue,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      '공모전·프로그램 공지는 배재대학교 일반공지와 학과/부서 공지를 기준으로 확인합니다.',
+                      style: TextStyle(
+                        color: AppColors.darkBlue,
+                        fontWeight: FontWeight.w700,
+                        height: 1.45,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      '공식 공고와 학생 모집글은 반드시 구분해서 표시합니다.',
+                      style: TextStyle(
+                        color: AppColors.darkBlue,
+                        fontWeight: FontWeight.w900,
+                        height: 1.45,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
               const SizedBox(height: 16),
               Row(
                 children: const [
