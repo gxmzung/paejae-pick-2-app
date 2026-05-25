@@ -304,6 +304,14 @@ The reason to return is Nasumi collection, campus missions, department tours, an
 - Separates official contest notices from student-created team recruitment posts
 - Adds notice collection and verification rules
 - Prepares TeamLink recruitment detail / creation flow for v4.4
+\n
+### v4.4 TeamLink Recruitment Flow
+
+- Adds TeamLink recruitment detail screen
+- Adds create recruitment mock screen
+- Connects recruitment cards to detail flow
+- Adds create recruitment entry button
+- Keeps TeamLink as a mock flow without real backend submission
 \n## Tech Stack
 
 - Flutter

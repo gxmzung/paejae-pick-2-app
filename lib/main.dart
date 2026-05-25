@@ -3529,6 +3529,31 @@ class TeamLinkScreen extends StatelessWidget {
                   ),
                 ],
               ),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: FilledButton.icon(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: AppColors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const CreateTeamRecruitmentMockScreen(),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.add_circle_outline),
+                  label: const Text(
+                    '팀 모집글 만들기',
+                    style: TextStyle(fontWeight: FontWeight.w900),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 18),
               const SizedBox(height: 18),
               const Text(
                 '역할 태그',
@@ -3690,7 +3715,15 @@ class TeamLinkScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(18),
                               ),
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => TeamRecruitmentDetailScreen(
+                                    team: team,
+                                  ),
+                                ),
+                              );
+                            },
                             icon: const Icon(Icons.chat_bubble_outline),
                             label: const Text(
                               '모집글 자세히 보기',
@@ -3722,6 +3755,362 @@ class TeamLinkScreen extends StatelessWidget {
     );
   }
 }
+
+
+class TeamRecruitmentDetailScreen extends StatelessWidget {
+  final Map<String, dynamic> team;
+
+  const TeamRecruitmentDetailScreen({
+    super.key,
+    required this.team,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final need = team['need'] as List<String>;
+
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IconButton(
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(Icons.arrow_back),
+              ),
+              const SizedBox(height: 8),
+              const Header(
+                title: '모집글 상세',
+                subtitle: '공모전 팀이 어떤 역할을 찾고 있는지 확인합니다.',
+              ),
+              const SizedBox(height: 18),
+              AppCard(
+                color: AppColors.darkBlue,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Recruitment Detail',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            team['name'] as String,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.w900,
+                              height: 1.25,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            team['contest'] as String,
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w700,
+                              height: 1.45,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Nasumi(size: 84, label: '모집'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '팀 소개',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      team['desc'] as String,
+                      style: const TextStyle(
+                        color: AppColors.sub,
+                        fontWeight: FontWeight.w700,
+                        height: 1.5,
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    ProfileRow(label: '현재 인원', value: team['members'] as String),
+                    ProfileRow(label: '모집 상태', value: team['status'] as String),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                color: AppColors.lightBlue,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '필요한 역할',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.darkBlue,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: need
+                          .map(
+                            (role) => Chip(
+                              backgroundColor: Colors.white,
+                              label: Text(
+                                role,
+                                style: const TextStyle(fontWeight: FontWeight.w900),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      '지원 전 확인',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+                    ),
+                    SizedBox(height: 10),
+                    _BulletLine(text: '공식 공고와 학생 모집글은 서로 다를 수 있습니다.'),
+                    _BulletLine(text: '최종 제출 조건은 반드시 공식 공고에서 확인해야 합니다.'),
+                    _BulletLine(text: '현재 단계에서는 실제 지원이 아니라 mock 흐름입니다.'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: FilledButton.icon(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: AppColors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                  ),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('지원 기능은 mock입니다. v4.x 이후 구현 예정입니다.'),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.send_outlined),
+                  label: const Text(
+                    '이 팀에 관심 표시하기',
+                    style: TextStyle(fontWeight: FontWeight.w900),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CreateTeamRecruitmentMockScreen extends StatelessWidget {
+  const CreateTeamRecruitmentMockScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final roles = [
+      '기획',
+      '개발',
+      '디자인',
+      '발표',
+      '자료조사',
+      '문서',
+      'AI',
+      '데이터',
+      '영상',
+      '팀장',
+    ];
+
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IconButton(
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(Icons.arrow_back),
+              ),
+              const SizedBox(height: 8),
+              const Header(
+                title: '모집글 만들기',
+                subtitle: '공모전 팀에서 필요한 역할을 정리하는 mock 화면입니다.',
+              ),
+              const SizedBox(height: 18),
+              AppCard(
+                color: AppColors.darkBlue,
+                child: Row(
+                  children: const [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Create Recruitment',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            '필요한 역할을\n명확하게 모집',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.w900,
+                              height: 1.25,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            '팀원이 필요한 이유와 역할을 구체적으로 쓰면 매칭 성공률이 높아집니다.',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w700,
+                              height: 1.45,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Nasumi(size: 84, label: '작성'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      '입력 항목',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+                    ),
+                    SizedBox(height: 12),
+                    ProfileRow(label: '공모전 선택', value: '스마트캠퍼스 아이디어 공모전'),
+                    ProfileRow(label: '팀 이름', value: '예: 캠퍼스 생활 개선팀'),
+                    ProfileRow(label: '현재 인원', value: '예: 2 / 4'),
+                    ProfileRow(label: '연락 방식', value: 'DM / 오픈채팅 / 이메일'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                color: AppColors.lightBlue,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '필요 역할 선택',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.darkBlue,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: roles
+                          .map(
+                            (role) => Chip(
+                              backgroundColor: Colors.white,
+                              label: Text(
+                                role,
+                                style: const TextStyle(fontWeight: FontWeight.w900),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      '작성 가이드',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+                    ),
+                    SizedBox(height: 10),
+                    _BulletLine(text: '팀이 해결하려는 주제를 먼저 적습니다.'),
+                    _BulletLine(text: '필요한 역할을 구체적으로 적습니다.'),
+                    _BulletLine(text: '개인 연락처 노출은 최소화해야 합니다.'),
+                    _BulletLine(text: '공식 공고 링크를 함께 확인해야 합니다.'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: FilledButton.icon(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: AppColors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                  ),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('모집글 생성은 mock입니다. 실제 저장은 이후 구현 예정입니다.'),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.edit_note),
+                  label: const Text(
+                    '모집글 mock 생성',
+                    style: TextStyle(fontWeight: FontWeight.w900),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 
 class _TeamLinkStatCard extends StatelessWidget {
   final String title;
