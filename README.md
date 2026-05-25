@@ -164,7 +164,16 @@ The reason to return is Nasumi collection, campus missions, department tours, an
 - Deadline-based sorting principle
 - Visibility rules for closed, under-review, and hidden notices
 - Clarifies that the hub should reduce search cost
-\n## Tech Stack
+\n
+### v2.4 Home Internal Test Positioning
+
+- Adds Home screen value proposition
+- Cafeteria as install reason
+- Nasumi / missions as repeat-use reason
+- Campus Participation Hub as campus spread reason
+- Clarifies the app as campus infrastructure MVP
+
+## Tech Stack
 
 - Flutter
 - Dart
