@@ -281,7 +281,15 @@ The reason to return is Nasumi collection, campus missions, department tours, an
 - Prepares Department Dictionary for real-device screenshots and stakeholder feedback
 - Adds TeamLink concept as the next feature direction for contest team matching
 
-## Tech Stack
+
+### v4.1 PCU TeamLink IA / Data Model
+
+- Defines TeamLink as a contest team matching feature
+- Adds contest notice, team recruitment, role tag, profile, and application status data models
+- Frames TeamLink as a way to increase contest participation and cross-major collaboration
+- Adds contest proposal draft for school submission
+- Prepares TeamLink mock screen implementation for v4.2
+\n## Tech Stack
 
 - Flutter
 - Dart
