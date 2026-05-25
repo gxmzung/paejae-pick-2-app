@@ -1607,6 +1607,32 @@ class ClubScreen extends StatelessWidget {
                     Chip(label: Text('공모전 팀원')),
                   ],
                 ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.darkBlue,
+                      side: const BorderSide(color: AppColors.darkBlue, width: 1.2),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const ParticipationTypeGuideScreen(),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.category_outlined),
+                    label: const Text(
+                      '참여 공고 유형 보기',
+                      style: TextStyle(fontWeight: FontWeight.w900),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -2314,6 +2340,171 @@ class _MyPageScreenState extends State<MyPageScreen> {
   }
 }
 
+
+
+
+class ParticipationTypeGuideScreen extends StatelessWidget {
+  const ParticipationTypeGuideScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final types = [
+      {
+        'title': '동아리 모집',
+        'desc': '정규 동아리, 학과 소모임, 프로젝트형 동아리의 부원 모집 공고입니다.',
+        'owner': '동아리 대표 / 운영진',
+        'risk': '대표자 확인, 모집 기간, 문의 채널 필요',
+      },
+      {
+        'title': '학과/부서 행사',
+        'desc': '학과 행사, 특강, 설명회, 체험 부스 등 참여자를 모집하는 공고입니다.',
+        'owner': '학과 / 부서 / 주최자',
+        'risk': '장소 확정, 담당자, 학교/부서 확인 필요',
+      },
+      {
+        'title': '프로젝트 팀원 모집',
+        'desc': '앱 개발, 공모전, 연구, 창업, 전공 프로젝트 팀원을 찾는 공고입니다.',
+        'owner': '프로젝트 리더',
+        'risk': '역할 분담, 기간, 결과물 기준 필요',
+      },
+      {
+        'title': '봉사 / 서포터즈',
+        'desc': '행사 운영 보조, 봉사 활동, 홍보단, 서포터즈 모집 공고입니다.',
+        'owner': '주최 단체 / 담당자',
+        'risk': '활동 시간, 장소, 안전 책임, 확인서 여부 필요',
+      },
+      {
+        'title': '공모전 팀원',
+        'desc': '대회·해커톤·아이디어 공모전 참가를 위한 팀원 모집 공고입니다.',
+        'owner': '팀장 / 참가자',
+        'risk': '마감일, 요구 역량, 제출물, 팀 규칙 필요',
+      },
+    ];
+
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IconButton(
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(Icons.arrow_back),
+              ),
+              const SizedBox(height: 8),
+              const Header(
+                title: '참여 공고 유형',
+                subtitle: '캠퍼스 참여 허브가 다룰 수 있는 공고 구조입니다.',
+              ),
+              const SizedBox(height: 18),
+              AppCard(
+                color: AppColors.darkBlue,
+                child: Row(
+                  children: const [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Participation Model',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            '모든 참여 정보를\n같은 형식으로 정리',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 23,
+                              fontWeight: FontWeight.w900,
+                              height: 1.3,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            '앱은 행사를 주최하지 않고, 공고 구조와 참여 흐름만 제공합니다.',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w700,
+                              height: 1.45,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Nasumi(size: 84, label: '참여'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              ...types.map((type) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 14),
+                  child: AppCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          type['title']!,
+                          style: const TextStyle(
+                            fontSize: 19,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          type['desc']!,
+                          style: const TextStyle(
+                            color: AppColors.sub,
+                            fontWeight: FontWeight.w700,
+                            height: 1.5,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        ProfileRow(label: '주최/등록 주체', value: type['owner']!),
+                        ProfileRow(label: '확인 필요', value: type['risk']!),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+              const SizedBox(height: 4),
+              AppCard(
+                color: AppColors.blue,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      '핵심 원칙',
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      '배재Pick은 공고를 구조화한다. 행사는 주최 단체가 운영한다.',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900,
+                        height: 1.35,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 
 class AppStatusRoadmapScreen extends StatelessWidget {

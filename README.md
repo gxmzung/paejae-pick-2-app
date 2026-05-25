@@ -133,7 +133,18 @@ The reason to return is Nasumi collection, campus missions, department tours, an
 - Clarifies that the app does not operate events directly
 - Positions the app as a structured notice and recruitment hub
 - Prepares expansion to department events, projects, volunteer groups, and contest teams
-\n## Tech Stack
+\n
+### v2.1 Participation Notice Types
+
+- Defines Campus Participation Hub notice types
+- Club recruitment
+- Department / office events
+- Project team recruitment
+- Volunteer / supporters notices
+- Contest team recruitment
+- Clarifies host/app responsibility split
+
+## Tech Stack
 
 - Flutter
 - Dart
