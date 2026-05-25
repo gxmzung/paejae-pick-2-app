@@ -181,6 +181,14 @@ The reason to return is Nasumi collection, campus missions, department tours, an
 - Locks included and excluded features
 - Prevents uncontrolled feature creep before testing
 - Prepares the project for v3.0 Internal Beta Candidate
+\n
+### v2.7 Design Lock / UI Spec
+
+- Locks generated concept images as the UI reference direction
+- Defines visual identity, colors, typography, layout, and mascot rules
+- Adds full screen inventory
+- Adds department intro and campus map design direction
+- Prevents UI drift between concept images and Flutter implementation
 \n## Tech Stack
 
 - Flutter
