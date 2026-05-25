@@ -1505,8 +1505,8 @@ class ClubScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Header(
-            title: '동아리 공고관',
-            subtitle: '익명 게시판이 아닌, 공식형 동아리 모집 공고 모음입니다.',
+            title: '캠퍼스 참여 허브',
+            subtitle: '동아리·행사·프로젝트 모집을 한곳에 모으는 참여 공고관입니다.',
           ),
           const SizedBox(height: 18),
           AppCard(
@@ -1517,7 +1517,7 @@ class ClubScreen extends StatelessWidget {
                 SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    '동아리 공고관은 댓글과 익명 게시판 없이, 모집 정보만 구조화해서 보여줍니다.',
+                    '캠퍼스 참여 허브는 행사를 직접 주최하지 않고, 모집·행사·프로젝트 참여 정보를 구조화해 보여주는 인프라입니다.',
                     style: TextStyle(
                       color: AppColors.text,
                       fontWeight: FontWeight.w700,
@@ -1571,6 +1571,65 @@ class ClubScreen extends StatelessWidget {
                       '공고 등록 요청',
                       style: TextStyle(fontWeight: FontWeight.w900),
                     ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
+          AppCard(
+            color: Colors.white,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  '참여 유형',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  '초기에는 동아리 모집부터 시작하고, 이후 학과 행사·프로젝트 팀원 모집·봉사·서포터즈 공고까지 확장할 수 있습니다.',
+                  style: TextStyle(
+                    color: AppColors.sub,
+                    fontWeight: FontWeight.w700,
+                    height: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    Chip(label: Text('동아리 모집')),
+                    Chip(label: Text('학과/부서 행사')),
+                    Chip(label: Text('프로젝트 팀원')),
+                    Chip(label: Text('봉사/서포터즈')),
+                    Chip(label: Text('공모전 팀원')),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
+          AppCard(
+            color: AppColors.darkBlue,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Text(
+                  '운영 원칙',
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  '배재Pick은 행사를 주최하지 않습니다. 공고 등록, 노출, 관심 저장, 신청 흐름을 보조하는 참여 인프라입니다.',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w900,
+                    height: 1.45,
                   ),
                 ),
               ],

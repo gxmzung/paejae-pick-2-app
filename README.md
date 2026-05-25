@@ -125,7 +125,15 @@ The reason to return is Nasumi collection, campus missions, department tours, an
 - Submit confirmation without backend
 - Direction toward admin-approved club notices
 
-## Tech Stack
+
+### v2.0 Campus Participation Hub
+
+- Reframes club notice hall as campus participation infrastructure
+- Adds participation type explanation
+- Clarifies that the app does not operate events directly
+- Positions the app as a structured notice and recruitment hub
+- Prepares expansion to department events, projects, volunteer groups, and contest teams
+\n## Tech Stack
 
 - Flutter
 - Dart
