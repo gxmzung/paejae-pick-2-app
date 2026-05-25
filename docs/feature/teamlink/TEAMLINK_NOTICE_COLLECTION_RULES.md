@@ -14,6 +14,7 @@ Examples:
 - 학과 공지
 - 대학일자리플러스본부 공지
 - 창업지원 프로그램 안내
+- 비교과/교육혁신 프로그램 안내
 
 ### Priority 2: Official External Contest Page
 
