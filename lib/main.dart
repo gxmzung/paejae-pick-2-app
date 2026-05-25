@@ -1710,6 +1710,66 @@ class ClubScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 14),
+          AppCard(
+            color: Colors.white,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  '필터 / 마감 임박',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  '공고가 많아질수록 유형별 필터와 마감 임박 정렬이 필요합니다.',
+                  style: TextStyle(
+                    color: AppColors.sub,
+                    fontWeight: FontWeight.w700,
+                    height: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: const [
+                    Chip(label: Text('전체')),
+                    Chip(label: Text('동아리')),
+                    Chip(label: Text('행사')),
+                    Chip(label: Text('프로젝트')),
+                    Chip(label: Text('마감 임박')),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.darkBlue,
+                      side: const BorderSide(color: AppColors.darkBlue, width: 1.2),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const ParticipationFilterGuideScreen(),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.filter_alt_outlined),
+                    label: const Text(
+                      '참여 허브 필터 보기',
+                      style: TextStyle(fontWeight: FontWeight.w900),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
           ...clubs.map((club) {
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
@@ -2390,6 +2450,198 @@ class _MyPageScreenState extends State<MyPageScreen> {
 
 
 
+
+
+
+class ParticipationFilterGuideScreen extends StatelessWidget {
+  const ParticipationFilterGuideScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final filters = [
+      {
+        'title': '전체',
+        'desc': '현재 노출 가능한 모든 참여 공고를 보여줍니다.',
+      },
+      {
+        'title': '동아리 모집',
+        'desc': '정규 동아리, 프로젝트형 동아리, 학과 소모임 모집 공고입니다.',
+      },
+      {
+        'title': '학과/부서 행사',
+        'desc': '특강, 설명회, 학과 행사, 체험 부스 공고입니다.',
+      },
+      {
+        'title': '프로젝트 팀원',
+        'desc': '앱 개발, 연구, 창업, 전공 프로젝트 팀원 모집 공고입니다.',
+      },
+      {
+        'title': '봉사/서포터즈',
+        'desc': '행사 스태프, 봉사, 홍보단, 서포터즈 모집 공고입니다.',
+      },
+      {
+        'title': '마감 임박',
+        'desc': '모집 마감이 가까운 공고를 우선 보여줍니다.',
+      },
+    ];
+
+    final sortRules = [
+      '마감 임박 공고를 상단에 표시',
+      '노출 중 상태만 기본 목록에 표시',
+      '모집 마감 공고는 별도 영역으로 이동',
+      '정보 확인 필요/검토 중 공고는 일반 학생에게 노출하지 않음',
+      '숨김 처리 공고는 목록에서 제외',
+    ];
+
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IconButton(
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(Icons.arrow_back),
+              ),
+              const SizedBox(height: 8),
+              const Header(
+                title: '참여 허브 필터',
+                subtitle: '학생이 지금 참여 가능한 공고를 빠르게 찾게 합니다.',
+              ),
+              const SizedBox(height: 18),
+              AppCard(
+                color: AppColors.darkBlue,
+                child: Row(
+                  children: const [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Filter / Deadline',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            '공고가 많아질수록\n필터와 마감 정렬이 핵심',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 23,
+                              fontWeight: FontWeight.w900,
+                              height: 1.3,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            '캠퍼스 참여 허브는 게시판이 아니라 찾기 쉬운 모집 인프라여야 합니다.',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w700,
+                              height: 1.45,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Nasumi(size: 84, label: '필터'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '필터 유형',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+                    ),
+                    const SizedBox(height: 12),
+                    ...filters.map((filter) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: ProfileRow(
+                          label: filter['title']!,
+                          value: filter['desc']!,
+                        ),
+                      );
+                    }),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '정렬 / 노출 규칙',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+                    ),
+                    const SizedBox(height: 12),
+                    ...sortRules.map(
+                      (rule) => Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Icon(Icons.check_circle_outline, size: 19, color: AppColors.blue),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                rule,
+                                style: const TextStyle(
+                                  color: AppColors.sub,
+                                  fontWeight: FontWeight.w700,
+                                  height: 1.45,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                color: AppColors.blue,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      '제품 원칙',
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      '학생은 게시글을 뒤지는 게 아니라, 지금 참여 가능한 공고를 바로 찾아야 합니다.',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900,
+                        height: 1.35,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 
 class ParticipationStatusGuideScreen extends StatelessWidget {

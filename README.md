@@ -156,7 +156,15 @@ The reason to return is Nasumi collection, campus missions, department tours, an
 - Hidden
 - Clarifies that checked does not mean officially approved
 
-## Tech Stack
+
+### v2.3 Participation Filter / Deadline Sort
+
+- Adds participation hub filter concept
+- All / club / event / project / deadline-soon categories
+- Deadline-based sorting principle
+- Visibility rules for closed, under-review, and hidden notices
+- Clarifies that the hub should reduce search cost
+\n## Tech Stack
 
 - Flutter
 - Dart
