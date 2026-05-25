@@ -214,7 +214,15 @@ The reason to return is Nasumi collection, campus missions, department tours, an
 - Adds app summary format for department dictionary content
 - Defines safe wording for transfer, admissions, and department atmosphere
 - Prepares data collection for department dictionary expansion
-\n## Tech Stack
+\n
+### v3.2 Department Seed Data Expansion
+
+- Expands Department Intro seed dataset
+- Adds AI/SW, physical AI, business, media, webtoon, and animation-related departments
+- Keeps all unverified information marked as mock / 확인 필요
+- Prepares the Department Dictionary for visual concept generation and UI polish
+
+## Tech Stack
 
 - Flutter
 - Dart
