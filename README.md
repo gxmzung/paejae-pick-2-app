@@ -189,6 +189,14 @@ The reason to return is Nasumi collection, campus missions, department tours, an
 - Adds full screen inventory
 - Adds department intro and campus map design direction
 - Prevents UI drift between concept images and Flutter implementation
+\n
+### v2.8 Department Intro IA / Data Model
+
+- Defines department introduction information architecture
+- Adds department data field model
+- Connects department intro with campus map, Nasumi collection, QR missions, and transfer exploration
+- Adds verification status labels for department information
+- Prepares the app for department intro mock screens
 \n## Tech Stack
 
 - Flutter
