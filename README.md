@@ -265,6 +265,14 @@ The reason to return is Nasumi collection, campus missions, department tours, an
 - Adds screenshot checklist for sharing and feedback
 - Adds short explanation text for professors, student councils, senior students, and testers
 - Prepares the Department Dictionary for feedback collection and interview recruitment
+\n
+### v3.9 Department Screenshot QA / Gap Report
+
+- Adds screenshot QA gap report for Department Dictionary
+- Defines comparison points between generated concept images and Flutter implementation
+- Adds screenshot capture guide
+- Adds v4.0 UI fix plan
+- Prepares Department Dictionary for real-device visual correction
 \n## Tech Stack
 
 - Flutter
