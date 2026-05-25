@@ -258,6 +258,13 @@ The reason to return is Nasumi collection, campus missions, department tours, an
 - Clarifies category, location, and mission code fields
 - Updates detail CTA to 학과백과 열기
 - Improves screenshot readiness for sharing with professors, student councils, and testers
+\n
+### v3.8 Department Demo / Screenshot Package
+
+- Adds Department Dictionary demo package
+- Adds screenshot checklist for sharing and feedback
+- Adds short explanation text for professors, student councils, senior students, and testers
+- Prepares the Department Dictionary for feedback collection and interview recruitment
 \n## Tech Stack
 
 - Flutter
