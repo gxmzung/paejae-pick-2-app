@@ -206,7 +206,15 @@ The reason to return is Nasumi collection, campus missions, department tours, an
 - Connects department intro with transfer exploration, buildings, Nasumi, and QR missions
 - Adds My Page entry point
 
-## Tech Stack
+
+### v3.1 Department Interview Template
+
+- Adds department interview template
+- Separates official information from student interview information
+- Adds app summary format for department dictionary content
+- Defines safe wording for transfer, admissions, and department atmosphere
+- Prepares data collection for department dictionary expansion
+\n## Tech Stack
 
 - Flutter
 - Dart
