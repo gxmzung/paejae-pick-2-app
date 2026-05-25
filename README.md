@@ -229,6 +229,13 @@ The reason to return is Nasumi collection, campus missions, department tours, an
 - Keeps all department information marked as 확인 필요
 - Defers interview content to a later version
 - Prepares the app for department filtering and grouped browsing
+\n
+### v3.4 Department Filter / Grouped Browsing
+
+- Adds Department Dictionary filter/grouping direction
+- Defines category-based browsing for 전체, 인문사회, 자연과학, 공학, 예체능, 평생교육
+- Adds a Department Filter Guide screen
+- Prepares the Department Dictionary for search and grouped browsing
 \n## Tech Stack
 
 - Flutter

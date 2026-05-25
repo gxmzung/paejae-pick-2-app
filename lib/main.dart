@@ -3167,6 +3167,169 @@ class ParticipationTypeGuideScreen extends StatelessWidget {
 
 
 
+
+class DepartmentFilterGuideScreen extends StatelessWidget {
+  const DepartmentFilterGuideScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final filters = [
+      {
+        'title': '전체',
+        'body': '모든 학과를 한 번에 확인합니다.',
+        'icon': Icons.apps_outlined,
+      },
+      {
+        'title': '인문사회',
+        'body': '경영, 행정, 심리, 항공서비스, 미디어 등 사람과 사회를 다루는 학과입니다.',
+        'icon': Icons.groups_outlined,
+      },
+      {
+        'title': '자연과학',
+        'body': '간호, 식품, 생명, 보건 등 건강과 자연과학 기반 학과입니다.',
+        'icon': Icons.biotech_outlined,
+      },
+      {
+        'title': '공학',
+        'body': '컴퓨터, AI, 보안, 전기, 건축, 로봇 등 기술 중심 학과입니다.',
+        'icon': Icons.memory_outlined,
+      },
+      {
+        'title': '예체능',
+        'body': '웹툰, 디자인, 영상, 음악, 스포츠 등 창작과 실기를 다루는 학과입니다.',
+        'icon': Icons.palette_outlined,
+      },
+      {
+        'title': '평생교육',
+        'body': '라이프스타일, 복지상담, 부동산, 시니어 운동 등 융합형 학습 분야입니다.',
+        'icon': Icons.school_outlined,
+      },
+    ];
+
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IconButton(
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(Icons.arrow_back),
+              ),
+              const SizedBox(height: 8),
+              const Header(
+                title: '학과백과 필터',
+                subtitle: '학과가 많아질수록 계열, 관심 분야, 건물 기준으로 빠르게 찾을 수 있어야 합니다.',
+              ),
+              const SizedBox(height: 18),
+              AppCard(
+                color: AppColors.darkBlue,
+                child: Row(
+                  children: const [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Department Browsing',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            '긴 학과 목록을\n탐색 가능한 구조로',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 23,
+                              fontWeight: FontWeight.w900,
+                              height: 1.3,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            '전체 목록은 유지하되, 계열 필터와 검색으로 학생의 탐색 비용을 줄입니다.',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w700,
+                              height: 1.45,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Nasumi(size: 84, label: '검색'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              ...filters.map((item) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: AppCard(
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 25,
+                          backgroundColor: AppColors.lightBlue,
+                          child: Icon(
+                            item['icon'] as IconData,
+                            color: AppColors.blue,
+                          ),
+                        ),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                item['title'] as String,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                item['body'] as String,
+                                style: const TextStyle(
+                                  color: AppColors.sub,
+                                  fontWeight: FontWeight.w700,
+                                  height: 1.45,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+              const SizedBox(height: 8),
+              AppCard(
+                color: AppColors.lightBlue,
+                child: const Text(
+                  '다음 단계에서는 실제 학과 리스트에 검색창과 계열 필터 칩을 연결합니다.',
+                  style: TextStyle(
+                    color: AppColors.darkBlue,
+                    fontWeight: FontWeight.w800,
+                    height: 1.5,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
 class DepartmentIntroScreen extends StatelessWidget {
   const DepartmentIntroScreen({super.key});
 
@@ -3918,7 +4081,7 @@ class DepartmentIntroScreen extends StatelessWidget {
               const SizedBox(height: 8),
               const Header(
                 title: '학과 소개',
-                subtitle: '전과 탐색, 캠퍼스 구조 이해, 학과 나섬이 수집을 연결합니다.',
+                subtitle: '학과 소개, 전과 탐색, 건물 위치, 나섬이 미션을 한 번에 확인합니다.',
               ),
               const SizedBox(height: 18),
               AppCard(
@@ -3962,6 +4125,32 @@ class DepartmentIntroScreen extends StatelessWidget {
                   ],
                 ),
               ),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.blue,
+                    side: const BorderSide(color: AppColors.blue),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const DepartmentFilterGuideScreen(),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.filter_alt_outlined),
+                  label: const Text(
+                    '학과 필터 보기',
+                    style: TextStyle(fontWeight: FontWeight.w900),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
               const SizedBox(height: 16),
               ...departments.map((department) {
                 final keywords = department['keywords'] as List<String>;
