@@ -31,6 +31,7 @@ class PaejaePickApp extends StatelessWidget {
 
 class AppColors {
   static const blue = Color(0xFF2563EB);
+  static const lightBlue = Color(0xFFEAF4FF);
   static const darkBlue = Color(0xFF0F2F6E);
   static const green = Color(0xFF10B981);
   static const yellow = Color(0xFFFBBF24);
