@@ -197,7 +197,16 @@ The reason to return is Nasumi collection, campus missions, department tours, an
 - Connects department intro with campus map, Nasumi collection, QR missions, and transfer exploration
 - Adds verification status labels for department information
 - Prepares the app for department intro mock screens
-\n## Tech Stack
+\n
+### v2.9 Department Intro Mock Screen
+
+- Adds Department Intro list screen
+- Adds Department Detail screen
+- Adds seed data for Computer Engineering, AI, Game Engineering, and Business
+- Connects department intro with transfer exploration, buildings, Nasumi, and QR missions
+- Adds My Page entry point
+
+## Tech Stack
 
 - Flutter
 - Dart

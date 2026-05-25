@@ -3166,6 +3166,414 @@ class ParticipationTypeGuideScreen extends StatelessWidget {
 }
 
 
+
+class DepartmentIntroScreen extends StatelessWidget {
+  const DepartmentIntroScreen({super.key});
+
+  static const List<Map<String, dynamic>> departments = [
+    {
+      'name': '컴퓨터공학과',
+      'college': 'AI·SW창의융합대학',
+      'building': '정보과학관',
+      'code': 'IT',
+      'keywords': ['앱', '서버', 'AI', '임베디드', '보안'],
+      'intro': '소프트웨어와 시스템을 설계하고 구현하는 학과입니다.',
+      'learn': ['프로그래밍', '자료구조', '운영체제', '네트워크', '소프트웨어공학'],
+      'career': ['소프트웨어 개발자', '백엔드 개발자', '임베디드 개발자', '보안 엔지니어'],
+      'transfer': '전과 관심자는 프로그래밍 기초, 수학/논리 사고, 꾸준한 실습 경험이 중요합니다.',
+      'nasumi': '컴퓨터공학과 나섬이',
+      'mission': 'CS-NASUMI',
+      'status': '확인 필요',
+    },
+    {
+      'name': '인공지능학과',
+      'college': 'AI·SW창의융합대학',
+      'building': '스마트배재관',
+      'code': 'SP',
+      'keywords': ['AI', '데이터', '머신러닝', '모델링'],
+      'intro': '데이터와 인공지능 모델을 이해하고 활용하는 학과입니다.',
+      'learn': ['Python', '데이터 분석', '머신러닝', '딥러닝', 'AI 응용'],
+      'career': ['AI 개발자', '데이터 분석가', 'ML 엔지니어', 'AI 서비스 기획자'],
+      'transfer': '전과 관심자는 Python 기초, 수학적 사고, 데이터 분석 경험을 준비하면 좋습니다.',
+      'nasumi': '인공지능학과 나섬이',
+      'mission': 'AI-NASUMI',
+      'status': '확인 필요',
+    },
+    {
+      'name': '게임공학과',
+      'college': 'AI·SW창의융합대학',
+      'building': '예술관 / 확인 필요',
+      'code': 'GAME',
+      'keywords': ['게임', '그래픽', '콘텐츠', '인터랙션'],
+      'intro': '게임과 인터랙티브 콘텐츠를 설계하고 구현하는 학과입니다.',
+      'learn': ['게임 프로그래밍', '그래픽스', '게임 기획', 'Unity/Unreal', '콘텐츠 제작'],
+      'career': ['게임 개발자', '게임 기획자', '콘텐츠 개발자', 'XR 개발자'],
+      'transfer': '전과 관심자는 프로그래밍 기초와 포트폴리오성 결과물을 준비하는 것이 좋습니다.',
+      'nasumi': '게임공학과 나섬이',
+      'mission': 'GAME-NASUMI',
+      'status': '확인 필요',
+    },
+    {
+      'name': '경영학과',
+      'college': '경영대학 / 확인 필요',
+      'building': '확인 필요',
+      'code': 'BUSINESS',
+      'keywords': ['경영', '마케팅', '창업', '기획', '데이터'],
+      'intro': '조직, 마케팅, 회계, 전략, 창업 등 비즈니스 운영을 배우는 학과입니다.',
+      'learn': ['경영학원론', '마케팅', '회계', '조직관리', '창업'],
+      'career': ['기획자', '마케터', '영업/운영 담당자', '창업가'],
+      'transfer': '전과 관심자는 발표력, 문서화, 데이터 기반 사고, 팀 프로젝트 경험이 도움이 됩니다.',
+      'nasumi': '경영학과 나섬이',
+      'mission': 'BUSINESS-NASUMI',
+      'status': '확인 필요',
+    },
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IconButton(
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(Icons.arrow_back),
+              ),
+              const SizedBox(height: 8),
+              const Header(
+                title: '학과 소개',
+                subtitle: '전과 탐색, 캠퍼스 구조 이해, 학과 나섬이 수집을 연결합니다.',
+              ),
+              const SizedBox(height: 18),
+              AppCard(
+                color: AppColors.darkBlue,
+                child: Row(
+                  children: const [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Department Guide',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            '학과를 알고,\n건물을 찾고,\n나섬이를 수집',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 23,
+                              fontWeight: FontWeight.w900,
+                              height: 1.3,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            '공식 입학 페이지가 아니라 학생 친화형 캠퍼스 탐색 가이드입니다.',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w700,
+                              height: 1.45,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Nasumi(size: 84, label: '학과'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              ...departments.map((department) {
+                final keywords = department['keywords'] as List<String>;
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 14),
+                  child: AppCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                department['name'] as String,
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                            ),
+                            Chip(
+                              label: Text(
+                                department['status'] as String,
+                                style: const TextStyle(fontWeight: FontWeight.w800),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          department['intro'] as String,
+                          style: const TextStyle(
+                            color: AppColors.sub,
+                            fontWeight: FontWeight.w700,
+                            height: 1.5,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Wrap(
+                          spacing: 7,
+                          runSpacing: 7,
+                          children: keywords
+                              .map((keyword) => Chip(label: Text(keyword)))
+                              .toList(),
+                        ),
+                        const SizedBox(height: 12),
+                        ProfileRow(label: '단과대', value: department['college'] as String),
+                        ProfileRow(label: '주요 건물', value: department['building'] as String),
+                        ProfileRow(label: '건물 코드', value: department['code'] as String),
+                        const SizedBox(height: 10),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 50,
+                          child: FilledButton.icon(
+                            style: FilledButton.styleFrom(
+                              backgroundColor: AppColors.blue,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18),
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => DepartmentDetailScreen(
+                                    department: department,
+                                  ),
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.school_outlined),
+                            label: const Text(
+                              '학과 자세히 보기',
+                              style: TextStyle(fontWeight: FontWeight.w900),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class DepartmentDetailScreen extends StatelessWidget {
+  final Map<String, dynamic> department;
+
+  const DepartmentDetailScreen({
+    super.key,
+    required this.department,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final learn = department['learn'] as List<String>;
+    final career = department['career'] as List<String>;
+
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IconButton(
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(Icons.arrow_back),
+              ),
+              const SizedBox(height: 8),
+              Header(
+                title: department['name'] as String,
+                subtitle: '${department['building']} · ${department['status']}',
+              ),
+              const SizedBox(height: 18),
+              AppCard(
+                color: AppColors.darkBlue,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            '학과 탐색 카드',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            department['intro'] as String,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w900,
+                              height: 1.35,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            '관련 나섬이: ${department['nasumi']}',
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Nasumi(size: 86, label: department['code'] as String),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '배우는 내용',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+                    ),
+                    const SizedBox(height: 10),
+                    ...learn.map((item) => _BulletLine(text: item)),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '진로 방향',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+                    ),
+                    const SizedBox(height: 10),
+                    ...career.map((item) => _BulletLine(text: item)),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '전과 관심자 메모',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      department['transfer'] as String,
+                      style: const TextStyle(
+                        color: AppColors.sub,
+                        fontWeight: FontWeight.w700,
+                        height: 1.55,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                color: AppColors.blue,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '나섬이 / QR 미션 연결',
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '${department['nasumi']} · 미션 코드 ${department['mission']}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900,
+                        height: 1.35,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      '실제 출시 전에는 학과/학생회/교수님 확인을 받은 정보만 공식처럼 표시합니다.',
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontWeight: FontWeight.w700,
+                        height: 1.45,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _BulletLine extends StatelessWidget {
+  final String text;
+
+  const _BulletLine({
+    required this.text,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('• ', style: TextStyle(fontWeight: FontWeight.w900)),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(
+                color: AppColors.sub,
+                fontWeight: FontWeight.w700,
+                height: 1.45,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
 class AppStatusRoadmapScreen extends StatelessWidget {
   const AppStatusRoadmapScreen({super.key});
 
