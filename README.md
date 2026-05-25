@@ -173,7 +173,15 @@ The reason to return is Nasumi collection, campus missions, department tours, an
 - Campus Participation Hub as campus spread reason
 - Clarifies the app as campus infrastructure MVP
 
-## Tech Stack
+
+### v2.5 MVP Feature Freeze
+
+- Freezes MVP feature scope before internal beta
+- Defines install reason / repeat-use reason / campus spread reason
+- Locks included and excluded features
+- Prevents uncontrolled feature creep before testing
+- Prepares the project for v3.0 Internal Beta Candidate
+\n## Tech Stack
 
 - Flutter
 - Dart
