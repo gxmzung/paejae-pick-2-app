@@ -3332,6 +3332,403 @@ class DepartmentFilterGuideScreen extends StatelessWidget {
 
 
 
+
+class TeamLinkScreen extends StatelessWidget {
+  const TeamLinkScreen({super.key});
+
+  static const contests = [
+    {
+      'title': '스마트캠퍼스 아이디어 공모전',
+      'field': '기획 / 앱 / 캠퍼스 문제 해결',
+      'deadline': 'D-12',
+      'organizer': '교내 공모전',
+      'status': '모집 중',
+      'roles': ['기획', '개발', '디자인', '발표'],
+    },
+    {
+      'title': 'AI 활용 서비스 기획 공모전',
+      'field': 'AI / 데이터 / 서비스 기획',
+      'deadline': 'D-18',
+      'organizer': '외부 공모전',
+      'status': '팀 모집 가능',
+      'roles': ['AI', '자료조사', '문서', '발표'],
+    },
+    {
+      'title': '지역문제 해결 프로젝트',
+      'field': '사회문제 / 데이터 / 정책 제안',
+      'deadline': 'D-24',
+      'organizer': '지자체 연계',
+      'status': '마감 임박 아님',
+      'roles': ['기획', '자료조사', '디자인', '대외 연락'],
+    },
+  ];
+
+  static const teams = [
+    {
+      'name': '캠퍼스 생활 개선팀',
+      'contest': '스마트캠퍼스 아이디어 공모전',
+      'members': '2 / 4',
+      'need': ['UI 디자인', '발표'],
+      'desc': '학식, 동아리, 학과 정보를 앱으로 연결하는 아이디어를 준비 중입니다.',
+      'status': '모집 중',
+    },
+    {
+      'name': 'AI 자료조사팀',
+      'contest': 'AI 활용 서비스 기획 공모전',
+      'members': '1 / 3',
+      'need': ['자료조사', '문서 작성'],
+      'desc': 'AI 서비스를 공모전 제안서 형태로 정리할 팀원을 찾습니다.',
+      'status': '일부 모집 완료',
+    },
+    {
+      'name': '지역 데이터 분석팀',
+      'contest': '지역문제 해결 프로젝트',
+      'members': '3 / 5',
+      'need': ['데이터 분석', '발표'],
+      'desc': '지역 문제를 데이터로 분석하고 발표 자료까지 함께 만들 팀입니다.',
+      'status': '모집 중',
+    },
+  ];
+
+  static const roleTags = [
+    '기획',
+    '개발',
+    '디자인',
+    '발표',
+    '자료조사',
+    '문서',
+    'AI',
+    '데이터',
+    '영상',
+    '팀장',
+    '하드웨어',
+    '마케팅',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IconButton(
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(Icons.arrow_back),
+              ),
+              const SizedBox(height: 8),
+              const Header(
+                title: '배재 팀링크',
+                subtitle: '공모전 공지와 팀원 모집을 역할 중심으로 연결합니다.',
+              ),
+              const SizedBox(height: 18),
+              AppCard(
+                color: AppColors.darkBlue,
+                child: Row(
+                  children: const [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'TeamLink',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            '혼자서도\n공모전 팀 찾기',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.w900,
+                              height: 1.25,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            '기획·개발·디자인·발표처럼 필요한 역할을 기준으로 팀원을 찾습니다.',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w700,
+                              height: 1.45,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Nasumi(size: 84, label: '팀'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: const [
+                  Expanded(
+                    child: _TeamLinkStatCard(
+                      title: '공모전',
+                      value: '3',
+                      icon: Icons.emoji_events_outlined,
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: _TeamLinkStatCard(
+                      title: '모집팀',
+                      value: '3',
+                      icon: Icons.groups_outlined,
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: _TeamLinkStatCard(
+                      title: '역할',
+                      value: '12',
+                      icon: Icons.sell_outlined,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 18),
+              const Text(
+                '역할 태그',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+              ),
+              const SizedBox(height: 10),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: roleTags
+                    .map(
+                      (role) => Chip(
+                        backgroundColor: Colors.white,
+                        label: Text(
+                          role,
+                          style: const TextStyle(fontWeight: FontWeight.w800),
+                        ),
+                      ),
+                    )
+                    .toList(),
+              ),
+              const SizedBox(height: 22),
+              const Text(
+                '마감 임박 / 추천 공모전',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+              ),
+              const SizedBox(height: 12),
+              ...contests.map((contest) {
+                final roles = contest['roles'] as List<String>;
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 14),
+                  child: AppCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Chip(
+                              backgroundColor: AppColors.lightBlue,
+                              label: Text(
+                                contest['deadline'] as String,
+                                style: const TextStyle(
+                                  color: AppColors.darkBlue,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                            ),
+                            const Spacer(),
+                            Text(
+                              contest['status'] as String,
+                              style: const TextStyle(
+                                color: AppColors.blue,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          contest['title'] as String,
+                          style: const TextStyle(
+                            fontSize: 19,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          contest['field'] as String,
+                          style: const TextStyle(
+                            color: AppColors.sub,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Wrap(
+                          spacing: 7,
+                          runSpacing: 7,
+                          children: roles.map((role) => Chip(label: Text(role))).toList(),
+                        ),
+                        const SizedBox(height: 10),
+                        ProfileRow(label: '주관', value: contest['organizer'] as String),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+              const SizedBox(height: 10),
+              const Text(
+                '팀원 모집',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+              ),
+              const SizedBox(height: 12),
+              ...teams.map((team) {
+                final need = team['need'] as List<String>;
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 14),
+                  child: AppCard(
+                    color: Colors.white,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                team['name'] as String,
+                                style: const TextStyle(
+                                  fontSize: 19,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                            ),
+                            Chip(
+                              label: Text(
+                                team['members'] as String,
+                                style: const TextStyle(fontWeight: FontWeight.w800),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          team['contest'] as String,
+                          style: const TextStyle(
+                            color: AppColors.blue,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          team['desc'] as String,
+                          style: const TextStyle(
+                            color: AppColors.sub,
+                            fontWeight: FontWeight.w700,
+                            height: 1.45,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Wrap(
+                          spacing: 7,
+                          runSpacing: 7,
+                          children: need
+                              .map(
+                                (role) => Chip(
+                                  backgroundColor: AppColors.lightBlue,
+                                  label: Text(role),
+                                ),
+                              )
+                              .toList(),
+                        ),
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 48,
+                          child: FilledButton.icon(
+                            style: FilledButton.styleFrom(
+                              backgroundColor: AppColors.blue,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18),
+                              ),
+                            ),
+                            onPressed: () {},
+                            icon: const Icon(Icons.chat_bubble_outline),
+                            label: const Text(
+                              '모집글 자세히 보기',
+                              style: TextStyle(fontWeight: FontWeight.w900),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+              const SizedBox(height: 8),
+              AppCard(
+                color: AppColors.lightBlue,
+                child: const Text(
+                  '현재 화면은 mock입니다. 실제 서비스에서는 부적절한 모집글 신고, 개인정보 보호, 공식 공모전 여부 표시가 필요합니다.',
+                  style: TextStyle(
+                    color: AppColors.darkBlue,
+                    fontWeight: FontWeight.w800,
+                    height: 1.5,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _TeamLinkStatCard extends StatelessWidget {
+  final String title;
+  final String value;
+  final IconData icon;
+
+  const _TeamLinkStatCard({
+    required this.title,
+    required this.value,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        children: [
+          Icon(icon, color: AppColors.blue),
+          const SizedBox(height: 6),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            title,
+            style: const TextStyle(
+              color: AppColors.sub,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
 class DepartmentIntroScreen extends StatefulWidget {
   const DepartmentIntroScreen({super.key});
 

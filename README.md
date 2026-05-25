@@ -289,6 +289,13 @@ The reason to return is Nasumi collection, campus missions, department tours, an
 - Frames TeamLink as a way to increase contest participation and cross-major collaboration
 - Adds contest proposal draft for school submission
 - Prepares TeamLink mock screen implementation for v4.2
+\n
+### v4.2 TeamLink Mock Screen
+
+- Adds first TeamLink mock screen
+- Shows contest notices, role tags, and team recruitment cards
+- Adds TeamLink entry point from Participation Hub
+- Frames TeamLink as a contest participation and cross-major collaboration feature
 \n## Tech Stack
 
 - Flutter
