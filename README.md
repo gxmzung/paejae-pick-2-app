@@ -251,6 +251,13 @@ The reason to return is Nasumi collection, campus missions, department tours, an
 - Adds category filter chips for 전체, 인문사회, 자연과학, 공학, 예체능, 평생교육
 - Adds result count and empty result state
 - Makes Department Dictionary easier to browse after full seed expansion
+\n
+### v3.7 Department Card Visual Polish
+
+- Polishes Department Dictionary card wording
+- Clarifies category, location, and mission code fields
+- Updates detail CTA to 학과백과 열기
+- Improves screenshot readiness for sharing with professors, student councils, and testers
 \n## Tech Stack
 
 - Flutter
