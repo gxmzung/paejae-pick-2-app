@@ -1529,6 +1529,54 @@ class ClubScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 18),
+          AppCard(
+            color: Colors.white,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  '동아리 운영진인가요?',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  '공고 등록 요청 mock으로 동아리 모집 공고 등록 흐름을 테스트할 수 있습니다.',
+                  style: TextStyle(
+                    color: AppColors.sub,
+                    fontWeight: FontWeight.w700,
+                    height: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.darkBlue,
+                      side: const BorderSide(color: AppColors.darkBlue, width: 1.2),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const ClubNoticeSubmitMockScreen(),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.post_add_outlined),
+                    label: const Text(
+                      '공고 등록 요청',
+                      style: TextStyle(fontWeight: FontWeight.w900),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
           ...clubs.map((club) {
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
