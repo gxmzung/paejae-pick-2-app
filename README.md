@@ -222,7 +222,14 @@ The reason to return is Nasumi collection, campus missions, department tours, an
 - Keeps all unverified information marked as mock / 확인 필요
 - Prepares the Department Dictionary for visual concept generation and UI polish
 
-## Tech Stack
+
+### v3.3 Department Full Seed Basic
+
+- Expands Department Dictionary to a full basic department seed list
+- Keeps all department information marked as 확인 필요
+- Defers interview content to a later version
+- Prepares the app for department filtering and grouped browsing
+\n## Tech Stack
 
 - Flutter
 - Dart
