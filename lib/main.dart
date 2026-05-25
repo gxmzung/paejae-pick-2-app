@@ -615,6 +615,57 @@ class HomeScreen extends StatelessWidget {
           const SizedBox(height: 24),
           const SectionTitle(title: '캠퍼스 참여 허브', action: '전체 보기'),
           const SizedBox(height: 12),
+              const SizedBox(height: 14),
+              AppCard(
+                color: AppColors.lightBlue,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '배재 팀링크',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.darkBlue,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      '공모전 공지와 팀원 모집을 역할 중심으로 연결합니다.',
+                      style: TextStyle(
+                        color: AppColors.darkBlue,
+                        fontWeight: FontWeight.w700,
+                        height: 1.45,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 48,
+                      child: FilledButton.icon(
+                        style: FilledButton.styleFrom(
+                          backgroundColor: AppColors.blue,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const TeamLinkScreen(),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.groups_2_outlined),
+                        label: const Text(
+                          '배재 팀링크 열기',
+                          style: TextStyle(fontWeight: FontWeight.w900),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
           const ClubCard(title: '오늘 모집 중인 참여 공고', category: '동아리 · 프로젝트 · 행사 모집', deadline: 'D-3', place: '캠퍼스 참여 허브'),
           const SizedBox(height: 10),
           const ClubCard(title: '배재 방송국', category: '방송 · 영상 제작', deadline: 'D-7', place: '방송센터'),
