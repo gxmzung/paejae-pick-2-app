@@ -320,6 +320,14 @@ The reason to return is Nasumi collection, campus missions, department tours, an
 - Clarifies that TeamLink does not guarantee team quality or contest awards
 - Separates official notices, student recruitment posts, and mock data
 - Prepares TeamLink for proposal and stakeholder explanation
+\n
+### v4.6 TeamLink Proposal / Screenshot Package
+
+- Adds TeamLink proposal package
+- Adds screenshot checklist for TeamLink screens
+- Adds short pitch text for professors, staff, student councils, and students
+- Frames TeamLink as official-notice-based contest participation infrastructure
+- Prepares TeamLink for real-device screenshot QA and stakeholder explanation
 \n## Tech Stack
 
 - Flutter
