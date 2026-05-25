@@ -1662,6 +1662,54 @@ class ClubScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 14),
+          AppCard(
+            color: Colors.white,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  '공고 상태 라벨',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  '공식 승인, 주최 측 등록, 검토 중, 모집 마감 등을 구분해 공고 신뢰도를 명확히 표시합니다.',
+                  style: TextStyle(
+                    color: AppColors.sub,
+                    fontWeight: FontWeight.w700,
+                    height: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.darkBlue,
+                      side: const BorderSide(color: AppColors.darkBlue, width: 1.2),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const ParticipationStatusGuideScreen(),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.verified_outlined),
+                    label: const Text(
+                      '공고 상태 라벨 보기',
+                      style: TextStyle(fontWeight: FontWeight.w900),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
           ...clubs.map((club) {
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
@@ -2341,6 +2389,169 @@ class _MyPageScreenState extends State<MyPageScreen> {
 }
 
 
+
+
+
+class ParticipationStatusGuideScreen extends StatelessWidget {
+  const ParticipationStatusGuideScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final statuses = [
+      {
+        'title': '주최 측 등록',
+        'desc': '동아리·학과·프로젝트 운영진이 직접 등록 요청한 상태입니다.',
+        'risk': '아직 앱 운영자가 내용을 확인하지 않았습니다.',
+      },
+      {
+        'title': '정보 확인 필요',
+        'desc': '장소, 기간, 문의 채널, 담당자 정보가 부족한 상태입니다.',
+        'risk': '학생에게 노출하기 전 추가 확인이 필요합니다.',
+      },
+      {
+        'title': '검토 중',
+        'desc': '앱 운영자 또는 담당자가 공고 내용을 확인하는 상태입니다.',
+        'risk': '공식 승인과는 다르며, 정보 품질 확인 단계입니다.',
+      },
+      {
+        'title': '노출 중',
+        'desc': '학생들이 볼 수 있는 공고 상태입니다.',
+        'risk': '행사 운영 책임은 주최 단체에 있습니다.',
+      },
+      {
+        'title': '모집 마감',
+        'desc': '모집 기간이 끝났거나 주최 측이 마감을 요청한 상태입니다.',
+        'risk': '신청 버튼은 비활성화되어야 합니다.',
+      },
+      {
+        'title': '숨김 처리',
+        'desc': '정보 오류, 민원, 운영 문제 등으로 임시 비노출된 상태입니다.',
+        'risk': '분쟁 판단이 아니라 공고 노출 중단 조치입니다.',
+      },
+    ];
+
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IconButton(
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(Icons.arrow_back),
+              ),
+              const SizedBox(height: 8),
+              const Header(
+                title: '공고 상태 라벨',
+                subtitle: '공식 승인과 단순 등록을 명확히 구분합니다.',
+              ),
+              const SizedBox(height: 18),
+              AppCard(
+                color: AppColors.darkBlue,
+                child: Row(
+                  children: const [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Status Labels',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            '공고의 신뢰도를\n상태값으로 구분',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 23,
+                              fontWeight: FontWeight.w900,
+                              height: 1.3,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            '앱은 공식 승인 여부를 과장하지 않고, 등록/확인/노출 상태를 분리합니다.',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w700,
+                              height: 1.45,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Nasumi(size: 84, label: '상태'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              ...statuses.map((status) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 14),
+                  child: AppCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          status['title']!,
+                          style: const TextStyle(
+                            fontSize: 19,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          status['desc']!,
+                          style: const TextStyle(
+                            color: AppColors.sub,
+                            fontWeight: FontWeight.w700,
+                            height: 1.5,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        ProfileRow(label: '주의', value: status['risk']!),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+              AppCard(
+                color: AppColors.blue,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      '핵심 원칙',
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      '확인됨은 공식 승인이 아니다. 공식성은 학교 또는 주최 단체가 책임진다.',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900,
+                        height: 1.35,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 
 class ParticipationTypeGuideScreen extends StatelessWidget {

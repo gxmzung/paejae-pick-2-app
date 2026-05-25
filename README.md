@@ -144,6 +144,18 @@ The reason to return is Nasumi collection, campus missions, department tours, an
 - Contest team recruitment
 - Clarifies host/app responsibility split
 
+
+### v2.2 Participation Status Labels
+
+- Defines notice status labels
+- Host submitted
+- Info check needed
+- Under review
+- Visible
+- Closed
+- Hidden
+- Clarifies that checked does not mean officially approved
+
 ## Tech Stack
 
 - Flutter
