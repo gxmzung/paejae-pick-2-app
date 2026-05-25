@@ -244,6 +244,13 @@ The reason to return is Nasumi collection, campus missions, department tours, an
 - Improves admission/transfer note wording
 - Clarifies Department Nasumi and QR mission connection
 - Moves Department Dictionary closer to generated UI concept direction
+\n
+### v3.6 Department Search / Filter UI
+
+- Adds actual search field to Department Dictionary
+- Adds category filter chips for 전체, 인문사회, 자연과학, 공학, 예체능, 평생교육
+- Adds result count and empty result state
+- Makes Department Dictionary easier to browse after full seed expansion
 \n## Tech Stack
 
 - Flutter

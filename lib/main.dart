@@ -3330,9 +3330,15 @@ class DepartmentFilterGuideScreen extends StatelessWidget {
 }
 
 
-class DepartmentIntroScreen extends StatelessWidget {
+
+class DepartmentIntroScreen extends StatefulWidget {
   const DepartmentIntroScreen({super.key});
 
+  @override
+  State<DepartmentIntroScreen> createState() => _DepartmentIntroScreenState();
+}
+
+class _DepartmentIntroScreenState extends State<DepartmentIntroScreen> {
   static const List<Map<String, dynamic>> departments = [
     {
       'name': '자율전공학부',
@@ -4064,8 +4070,82 @@ class DepartmentIntroScreen extends StatelessWidget {
     },
   ];
 
+  String _query = '';
+  String _selectedGroup = '전체';
+
+  static const List<String> groups = [
+    '전체',
+    '인문사회',
+    '자연과학',
+    '공학',
+    '예체능',
+    '평생교육',
+  ];
+
+  List<Map<String, dynamic>> get filteredDepartments {
+    final q = _query.trim().toLowerCase();
+
+    return departments.where((department) {
+      final name = (department['name'] as String).toLowerCase();
+      final college = (department['college'] as String).toLowerCase();
+      final building = (department['building'] as String).toLowerCase();
+      final code = (department['code'] as String).toLowerCase();
+      final keywords = (department['keywords'] as List<String>).join(' ').toLowerCase();
+      final career = (department['career'] as List<String>).join(' ').toLowerCase();
+
+      final matchesQuery = q.isEmpty ||
+          name.contains(q) ||
+          college.contains(q) ||
+          building.contains(q) ||
+          code.contains(q) ||
+          keywords.contains(q) ||
+          career.contains(q);
+
+      final matchesGroup = _selectedGroup == '전체' ||
+          college.contains(_selectedGroup.toLowerCase()) ||
+          _groupOf(college) == _selectedGroup;
+
+      return matchesQuery && matchesGroup;
+    }).toList();
+  }
+
+  static String _groupOf(String college) {
+    if (college.contains('인문사회') ||
+        college.contains('경영') ||
+        college.contains('관광') ||
+        college.contains('항공')) {
+      return '인문사회';
+    }
+    if (college.contains('자연과학') ||
+        college.contains('간호') ||
+        college.contains('보건') ||
+        college.contains('생명') ||
+        college.contains('식품')) {
+      return '자연과학';
+    }
+    if (college.contains('공학') ||
+        college.contains('AI') ||
+        college.contains('SW') ||
+        college.contains('피지컬')) {
+      return '공학';
+    }
+    if (college.contains('예체능') ||
+        college.contains('디자인') ||
+        college.contains('아트') ||
+        college.contains('공연') ||
+        college.contains('스포츠')) {
+      return '예체능';
+    }
+    if (college.contains('평생교육')) {
+      return '평생교육';
+    }
+    return '전체';
+  }
+
   @override
   Widget build(BuildContext context) {
+    final visibleDepartments = filteredDepartments;
+
     return Scaffold(
       backgroundColor: AppColors.bg,
       body: SafeArea(
@@ -4080,7 +4160,7 @@ class DepartmentIntroScreen extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               const Header(
-                title: '학과 소개',
+                title: '학과백과',
                 subtitle: '학과 소개, 전과 탐색, 건물 위치, 나섬이 미션을 한 번에 확인합니다.',
               ),
               const SizedBox(height: 18),
@@ -4125,113 +4205,174 @@ class DepartmentIntroScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: OutlinedButton.icon(
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.blue,
-                    side: const BorderSide(color: AppColors.blue),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18),
-                    ),
+              const SizedBox(height: 16),
+              TextField(
+                onChanged: (value) {
+                  setState(() => _query = value);
+                },
+                decoration: InputDecoration(
+                  hintText: '학과명, 키워드, 진로, 건물 검색',
+                  prefixIcon: const Icon(Icons.search),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
                   ),
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const DepartmentFilterGuideScreen(),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.filter_alt_outlined),
-                  label: const Text(
-                    '학과 필터 보기',
-                    style: TextStyle(fontWeight: FontWeight.w900),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(22),
+                    borderSide: BorderSide.none,
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
-              const SizedBox(height: 16),
-              ...departments.map((department) {
-                final keywords = department['keywords'] as List<String>;
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 14),
-                  child: AppCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                department['name'] as String,
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              ),
-                            ),
-                            Chip(
-                              label: Text(
-                                department['status'] as String,
-                                style: const TextStyle(fontWeight: FontWeight.w800),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          department['intro'] as String,
-                          style: const TextStyle(
-                            color: AppColors.sub,
-                            fontWeight: FontWeight.w700,
-                            height: 1.5,
+              const SizedBox(height: 12),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: groups.map((group) {
+                    final selected = _selectedGroup == group;
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: ChoiceChip(
+                        label: Text(
+                          group,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w900,
+                            color: selected ? Colors.white : AppColors.darkBlue,
                           ),
                         ),
-                        const SizedBox(height: 10),
-                        Wrap(
-                          spacing: 7,
-                          runSpacing: 7,
-                          children: keywords
-                              .map((keyword) => Chip(label: Text(keyword)))
-                              .toList(),
-                        ),
-                        const SizedBox(height: 12),
-                        ProfileRow(label: '단과대', value: department['college'] as String),
-                        ProfileRow(label: '주요 건물', value: department['building'] as String),
-                        ProfileRow(label: '건물 코드', value: department['code'] as String),
-                        const SizedBox(height: 10),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 50,
-                          child: FilledButton.icon(
-                            style: FilledButton.styleFrom(
-                              backgroundColor: AppColors.blue,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18),
-                              ),
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => DepartmentDetailScreen(
-                                    department: department,
-                                  ),
-                                ),
-                              );
-                            },
-                            icon: const Icon(Icons.school_outlined),
-                            label: const Text(
-                              '학과 자세히 보기',
-                              style: TextStyle(fontWeight: FontWeight.w900),
-                            ),
-                          ),
-                        ),
-                      ],
+                        selected: selected,
+                        selectedColor: AppColors.blue,
+                        backgroundColor: Colors.white,
+                        onSelected: (_) {
+                          setState(() => _selectedGroup = group);
+                        },
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Text(
+                    '검색 결과 ${visibleDepartments.length}개',
+                    style: const TextStyle(
+                      color: AppColors.sub,
+                      fontWeight: FontWeight.w900,
                     ),
                   ),
-                );
-              }),
+                  const Spacer(),
+                  TextButton.icon(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const DepartmentFilterGuideScreen(),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.filter_alt_outlined),
+                    label: const Text(
+                      '필터 안내',
+                      style: TextStyle(fontWeight: FontWeight.w900),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              if (visibleDepartments.isEmpty)
+                AppCard(
+                  color: AppColors.lightBlue,
+                  child: const Text(
+                    '조건에 맞는 학과가 없습니다. 검색어를 줄이거나 전체 필터로 다시 확인해보세요.',
+                    style: TextStyle(
+                      color: AppColors.darkBlue,
+                      fontWeight: FontWeight.w800,
+                      height: 1.5,
+                    ),
+                  ),
+                )
+              else
+                ...visibleDepartments.map((department) {
+                  final keywords = department['keywords'] as List<String>;
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 14),
+                    child: AppCard(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  department['name'] as String,
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w900,
+                                  ),
+                                ),
+                              ),
+                              Chip(
+                                label: Text(
+                                  department['status'] as String,
+                                  style: const TextStyle(fontWeight: FontWeight.w800),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            department['intro'] as String,
+                            style: const TextStyle(
+                              color: AppColors.sub,
+                              fontWeight: FontWeight.w700,
+                              height: 1.5,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Wrap(
+                            spacing: 7,
+                            runSpacing: 7,
+                            children: keywords
+                                .map((keyword) => Chip(label: Text(keyword)))
+                                .toList(),
+                          ),
+                          const SizedBox(height: 12),
+                          ProfileRow(label: '계열/학부', value: department['college'] as String),
+                          ProfileRow(label: '주요 건물', value: department['building'] as String),
+                          ProfileRow(label: '건물 코드', value: department['code'] as String),
+                          const SizedBox(height: 10),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 50,
+                            child: FilledButton.icon(
+                              style: FilledButton.styleFrom(
+                                backgroundColor: AppColors.blue,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18),
+                                ),
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => DepartmentDetailScreen(
+                                      department: department,
+                                    ),
+                                  ),
+                                );
+                              },
+                              icon: const Icon(Icons.school_outlined),
+                              label: const Text(
+                                '학과 자세히 보기',
+                                style: TextStyle(fontWeight: FontWeight.w900),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }),
             ],
           ),
         ),
