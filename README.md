@@ -312,6 +312,14 @@ The reason to return is Nasumi collection, campus missions, department tours, an
 - Connects recruitment cards to detail flow
 - Adds create recruitment entry button
 - Keeps TeamLink as a mock flow without real backend submission
+\n
+### v4.5 TeamLink Trust / Safety Policy
+
+- Adds TeamLink trust and safety policy screen
+- Defines report reasons and privacy boundaries
+- Clarifies that TeamLink does not guarantee team quality or contest awards
+- Separates official notices, student recruitment posts, and mock data
+- Prepares TeamLink for proposal and stakeholder explanation
 \n## Tech Stack
 
 - Flutter

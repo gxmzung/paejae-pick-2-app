@@ -3554,6 +3554,32 @@ class TeamLinkScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 18),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.blue,
+                    side: const BorderSide(color: AppColors.blue),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const TeamLinkSafetyPolicyScreen(),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.verified_user_outlined),
+                  label: const Text(
+                    '팀링크 운영정책 보기',
+                    style: TextStyle(fontWeight: FontWeight.w900),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
               const SizedBox(height: 18),
               const Text(
                 '역할 태그',
@@ -4099,6 +4125,187 @@ class CreateTeamRecruitmentMockScreen extends StatelessWidget {
                   icon: const Icon(Icons.edit_note),
                   label: const Text(
                     '모집글 mock 생성',
+                    style: TextStyle(fontWeight: FontWeight.w900),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+
+class TeamLinkSafetyPolicyScreen extends StatelessWidget {
+  const TeamLinkSafetyPolicyScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final reportReasons = [
+      '허위 모집글',
+      '개인정보 과다 요구',
+      '부적절한 표현',
+      '공식 공고 사칭',
+      '금전 요구',
+      '외부 링크 위험',
+      '팀원 괴롭힘/분쟁',
+    ];
+
+    final trustRules = [
+      '학교 공식 공고와 학생 모집글을 분리해서 표시합니다.',
+      'mock 데이터와 실제 공고를 구분해야 합니다.',
+      '개인 연락처는 최소한으로 노출해야 합니다.',
+      '팀원 실력이나 수상 가능성을 보장하지 않습니다.',
+      '최종 제출 조건은 공식 공고에서 확인해야 합니다.',
+    ];
+
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IconButton(
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(Icons.arrow_back),
+              ),
+              const SizedBox(height: 8),
+              const Header(
+                title: '팀링크 운영정책',
+                subtitle: '팀원 매칭 기능의 신뢰, 신고, 개인정보 기준을 정리합니다.',
+              ),
+              const SizedBox(height: 18),
+              AppCard(
+                color: AppColors.darkBlue,
+                child: Row(
+                  children: const [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Trust & Safety',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            '공식 공고와\n학생 모집글을 구분',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.w900,
+                              height: 1.25,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            'TeamLink는 팀을 연결하지만, 팀 품질이나 수상 가능성을 보장하지 않습니다.',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w700,
+                              height: 1.45,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Nasumi(size: 84, label: '신뢰'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                color: AppColors.lightBlue,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '신뢰 표시 기준',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.darkBlue,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    ...trustRules.map((rule) => _BulletLine(text: rule)),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '신고 사유',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+                    ),
+                    const SizedBox(height: 10),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: reportReasons
+                          .map(
+                            (reason) => Chip(
+                              backgroundColor: AppColors.lightBlue,
+                              label: Text(
+                                reason,
+                                style: const TextStyle(fontWeight: FontWeight.w800),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      '운영 한계',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+                    ),
+                    SizedBox(height: 10),
+                    _BulletLine(text: '앱은 팀원을 연결할 수 있지만 팀 갈등을 모두 해결할 수는 없습니다.'),
+                    _BulletLine(text: '학생 모집글은 공식 공고가 아니며 별도 확인이 필요합니다.'),
+                    _BulletLine(text: '실제 서비스에서는 관리자 검토와 신고 처리 절차가 필요합니다.'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.blue,
+                    side: const BorderSide(color: AppColors.blue),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                  ),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('신고 접수는 mock입니다. 실제 운영 기능은 이후 구현 예정입니다.'),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.report_gmailerrorred_outlined),
+                  label: const Text(
+                    '모집글 신고 mock',
                     style: TextStyle(fontWeight: FontWeight.w900),
                   ),
                 ),
