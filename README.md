@@ -273,7 +273,15 @@ The reason to return is Nasumi collection, campus missions, department tours, an
 - Adds screenshot capture guide
 - Adds v4.0 UI fix plan
 - Prepares Department Dictionary for real-device visual correction
-\n## Tech Stack
+\n
+### v4.0 Department UI Fix Pass
+
+- Defines the first Department Dictionary UI correction pass
+- Keeps verified/unverified department information separated
+- Prepares Department Dictionary for real-device screenshots and stakeholder feedback
+- Adds TeamLink concept as the next feature direction for contest team matching
+
+## Tech Stack
 
 - Flutter
 - Dart
