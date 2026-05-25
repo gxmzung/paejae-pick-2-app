@@ -4280,7 +4280,7 @@ class DepartmentDetailScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
-                            '학과 탐색 카드',
+                            'Department Dictionary',
                             style: TextStyle(
                               color: Colors.white70,
                               fontWeight: FontWeight.w800,
@@ -4298,7 +4298,7 @@ class DepartmentDetailScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            '관련 나섬이: ${department['nasumi']}',
+                            '나섬이 미션: ${department['nasumi']}',
                             style: const TextStyle(
                               color: Colors.white70,
                               fontWeight: FontWeight.w700,
@@ -4308,6 +4308,27 @@ class DepartmentDetailScreen extends StatelessWidget {
                       ),
                     ),
                     Nasumi(size: 86, label: department['code'] as String),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                color: AppColors.lightBlue,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '이런 학생에게 추천',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.darkBlue,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    _BulletLine(text: '이 학과의 키워드와 진로 방향에 관심이 있는 학생'),
+                    _BulletLine(text: '관련 건물과 학과 분위기를 직접 탐색해보고 싶은 학생'),
+                    _BulletLine(text: '전과, 복수전공, 진로 탐색을 고민하는 학생'),
                   ],
                 ),
               ),
@@ -4345,7 +4366,7 @@ class DepartmentDetailScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      '전과 관심자 메모',
+                      '입학/전과 참고 메모',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
                     ),
                     const SizedBox(height: 10),
@@ -4367,7 +4388,7 @@ class DepartmentDetailScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      '나섬이 / QR 미션 연결',
+                      '학과 나섬이 / QR 미션',
                       style: TextStyle(
                         color: Colors.white70,
                         fontWeight: FontWeight.w800,
