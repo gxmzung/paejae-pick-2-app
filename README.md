@@ -116,7 +116,16 @@ The reason to return is Nasumi collection, campus missions, department tours, an
 - Feedback form questions
 - Release package notes
 - Internal testing preparation
-\n## Tech Stack
+\n
+### v1.9 Club Notice Submit Mock
+
+- Club notice submission mock
+- Structured recruitment request flow
+- Club name / title / category / contact / description fields
+- Submit confirmation without backend
+- Direction toward admin-approved club notices
+
+## Tech Stack
 
 - Flutter
 - Dart

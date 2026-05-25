@@ -1547,6 +1547,268 @@ class ClubScreen extends StatelessWidget {
   }
 }
 
+
+class ClubNoticeSubmitMockScreen extends StatefulWidget {
+  const ClubNoticeSubmitMockScreen({super.key});
+
+  @override
+  State<ClubNoticeSubmitMockScreen> createState() => _ClubNoticeSubmitMockScreenState();
+}
+
+class _ClubNoticeSubmitMockScreenState extends State<ClubNoticeSubmitMockScreen> {
+  final clubNameController = TextEditingController();
+  final titleController = TextEditingController();
+  final categoryController = TextEditingController();
+  final contactController = TextEditingController();
+  final descController = TextEditingController();
+
+  String selectedType = '정기 모집';
+
+  @override
+  void dispose() {
+    clubNameController.dispose();
+    titleController.dispose();
+    categoryController.dispose();
+    contactController.dispose();
+    descController.dispose();
+    super.dispose();
+  }
+
+  void submitMock() {
+    final clubName = clubNameController.text.trim();
+    final title = titleController.text.trim();
+
+    if (clubName.isEmpty || title.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('동아리명과 공고 제목은 필수입니다.')),
+      );
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('공고 등록 요청 완료'),
+        content: Text(
+          '$clubName 공고가 등록 요청 mock으로 접수되었습니다.\n\n'
+          '실제 출시 전에는 관리자 승인 후 공고관에 노출되는 구조가 필요합니다.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+            },
+            child: const Text('확인'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget field({
+    required String label,
+    required String hint,
+    required TextEditingController controller,
+    int maxLines = 1,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: TextField(
+        controller: controller,
+        maxLines: maxLines,
+        decoration: InputDecoration(
+          labelText: label,
+          hintText: hint,
+          filled: true,
+          fillColor: Colors.grey.shade100,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(18),
+            borderSide: BorderSide.none,
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final types = ['정기 모집', '프로젝트 모집', '행사 스태프', '신입 부원 모집', '기타'];
+
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IconButton(
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(Icons.arrow_back),
+              ),
+              const SizedBox(height: 8),
+              const Header(
+                title: '동아리 공고 등록 요청',
+                subtitle: '익명 게시판이 아닌 공고형 모집 구조를 테스트합니다.',
+              ),
+              const SizedBox(height: 18),
+              AppCard(
+                color: AppColors.darkBlue,
+                child: Row(
+                  children: const [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Notice Submit Mock',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            '동아리 운영진이\n공고를 요청하는 흐름',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 23,
+                              fontWeight: FontWeight.w900,
+                              height: 1.3,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            '현재는 서버 저장 없이 화면 흐름만 검증합니다.',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w700,
+                              height: 1.45,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Nasumi(size: 84, label: '공고'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '등록 요청 정보',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+                    ),
+                    const SizedBox(height: 12),
+                    field(
+                      label: '동아리명',
+                      hint: '예: SkyEdge',
+                      controller: clubNameController,
+                    ),
+                    field(
+                      label: '공고 제목',
+                      hint: '예: 드론/임베디드 프로젝트 팀원 모집',
+                      controller: titleController,
+                    ),
+                    field(
+                      label: '분야',
+                      hint: '예: 드론 · ROS2 · PX4',
+                      controller: categoryController,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: DropdownButtonFormField<String>(
+                        value: selectedType,
+                        items: types
+                            .map(
+                              (type) => DropdownMenuItem(
+                                value: type,
+                                child: Text(type),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (value) {
+                          if (value == null) return;
+                          setState(() => selectedType = value);
+                        },
+                        decoration: InputDecoration(
+                          labelText: '모집 유형',
+                          filled: true,
+                          fillColor: Colors.grey.shade100,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(18),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                      ),
+                    ),
+                    field(
+                      label: '연락 방법',
+                      hint: '예: 인스타 DM, 오픈채팅, 대표 연락처',
+                      controller: contactController,
+                    ),
+                    field(
+                      label: '공고 설명',
+                      hint: '모집 대상, 활동 내용, 초보 가능 여부 등을 적어주세요.',
+                      controller: descController,
+                      maxLines: 5,
+                    ),
+                    const SizedBox(height: 4),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 52,
+                      child: FilledButton.icon(
+                        style: FilledButton.styleFrom(
+                          backgroundColor: AppColors.blue,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                        ),
+                        onPressed: submitMock,
+                        icon: const Icon(Icons.send_outlined),
+                        label: const Text(
+                          '공고 등록 요청 mock',
+                          style: TextStyle(fontWeight: FontWeight.w900),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      '운영 원칙',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      '이 기능은 자유 익명 게시판이 아니라 동아리 모집 정보를 구조화해서 보여주는 공고관을 목표로 합니다. 실제 출시 전에는 관리자 승인, 학교 이메일 인증, 동아리 대표 권한 확인이 필요합니다.',
+                      style: TextStyle(
+                        color: AppColors.sub,
+                        fontWeight: FontWeight.w700,
+                        height: 1.6,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
 class ClubDetailScreen extends StatefulWidget {
   final Map<String, String> club;
 
