@@ -5704,7 +5704,7 @@ class AppStatusRoadmapScreen extends StatelessWidget {
       '실시간 위치 추적',
       '실제 학생식당 데이터 연동',
       '실제 동아리 공고 등록',
-      '관리자 콘솔',
+      '운영 예시 화면',
       '공식 학교 승인',
       '나섬이 캐릭터 사용 허가 확인',
       'Play Store 정식 배포 signing',
