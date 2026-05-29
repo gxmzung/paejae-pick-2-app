@@ -30,3 +30,8 @@ android/key.properties
 
 # Local backup files
 lib/*.bak_*
+
+.venv-auth/
+server/.env
+server/__pycache__/
+*.pyc
