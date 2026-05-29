@@ -2612,79 +2612,114 @@ class _HomeCafeteriaPriorityCard extends StatelessWidget {
               ),
             ],
           ),
-          child: Row(
+          child: Column(
             children: [
-              Container(
-                width: 86,
-                height: 86,
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(.94),
-                  borderRadius: BorderRadius.circular(26),
-                ),
-                child: const _AssetImage(
-                  path: Assets.citybrain,
-                  fit: BoxFit.contain,
-                ),
-              ),
-              const SizedBox(width: 16),
-              const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '학생식당',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 25,
-                        fontWeight: FontWeight.w900,
-                        height: 1.08,
-                      ),
+              Row(
+                children: [
+                  Container(
+                    width: 86,
+                    height: 86,
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(.94),
+                      borderRadius: BorderRadius.circular(26),
                     ),
-                    SizedBox(height: 7),
-                    Text(
-                      '오늘 메뉴와 주간 식단을 먼저 확인해요',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 13.5,
-                        fontWeight: FontWeight.w800,
-                        height: 1.35,
-                      ),
+                    child: const _AssetImage(
+                      path: Assets.citybrain,
+                      fit: BoxFit.contain,
                     ),
-                    SizedBox(height: 10),
-                    Row(
+                  ),
+                  const SizedBox(width: 16),
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(
-                          Icons.restaurant_menu_rounded,
-                          color: Colors.white,
-                          size: 18,
-                        ),
-                        SizedBox(width: 5),
                         Text(
-                          '공식 식단 기반',
+                          '학생식당',
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 12,
+                            fontSize: 25,
                             fontWeight: FontWeight.w900,
+                            height: 1.08,
                           ),
+                        ),
+                        SizedBox(height: 7),
+                        Text(
+                          '오늘 메뉴와 주간 식단을 먼저 확인해요',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w800,
+                            height: 1.35,
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.restaurant_menu_rounded,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                            SizedBox(width: 5),
+                            Text(
+                              '공식 식단 기반',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(width: 8),
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: Colors.white24,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.chevron_right_rounded,
+                      color: Colors.white,
+                      size: 28,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: 8),
+              const SizedBox(height: 14),
               Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(.22),
-                  shape: BoxShape.circle,
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 13,
+                  vertical: 11,
                 ),
-                child: const Icon(
-                  Icons.chevron_right_rounded,
-                  color: Colors.white,
-                  size: 28,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(.18),
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(color: Colors.white24),
+                ),
+                child: const Row(
+                  children: [
+                    Icon(Icons.today_rounded, color: Colors.white, size: 19),
+                    SizedBox(width: 7),
+                    Expanded(
+                      child: Text(
+                        '오늘 메뉴 미리보기 · 중식/석식은 학생식당에서 확인',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
