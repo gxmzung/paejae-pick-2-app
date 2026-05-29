@@ -14490,6 +14490,249 @@ class _MyEmailAuthStatusCardState extends State<_MyEmailAuthStatusCard> {
   }
 }
 
+class _MyLostFoundClaimsSection extends StatefulWidget {
+  const _MyLostFoundClaimsSection();
+
+  @override
+  State<_MyLostFoundClaimsSection> createState() =>
+      _MyLostFoundClaimsSectionState();
+}
+
+class _MyLostFoundClaimsSectionState extends State<_MyLostFoundClaimsSection> {
+  List<String> claimIds = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final values = await LostFoundInterestStore.load();
+
+    if (!mounted) return;
+
+    setState(() {
+      claimIds = values;
+    });
+  }
+
+  _LostFoundItem? _itemById(String id) {
+    for (final item in _LostFoundScreenState.items) {
+      if (item.id == id) return item;
+    }
+    return null;
+  }
+
+  Future<void> _clearMissingItems() async {
+    final validIds = _LostFoundScreenState.items.map((e) => e.id).toSet();
+    final current = await LostFoundInterestStore.load();
+    final filtered = current.where(validIds.contains).toList();
+
+    if (filtered.length == current.length) return;
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList(LostFoundInterestStore.key, filtered);
+
+    await _load();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final items = claimIds.map(_itemById).whereType<_LostFoundItem>().toList();
+
+    return _Card(
+      padding: const EdgeInsets.all(17),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Text(
+                '내 분실물 확인 요청',
+                style: TextStyle(
+                  color: AppColors.text,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              const Spacer(),
+              GestureDetector(
+                onTap: () async {
+                  await _clearMissingItems();
+                  await _load();
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 7,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFEAF3FF),
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: const Row(
+                    children: [
+                      Icon(
+                        Icons.refresh_rounded,
+                        color: AppColors.blue,
+                        size: 16,
+                      ),
+                      SizedBox(width: 4),
+                      Text(
+                        '갱신',
+                        style: TextStyle(
+                          color: AppColors.blue,
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(
+            items.isEmpty
+                ? '분실물 상세에서 “내 물건일 수도 있어요”를 누르면 여기에 표시됩니다.'
+                : '본인 확인 요청 ${items.length}건',
+            style: const TextStyle(
+              color: AppColors.sub,
+              fontSize: 12.5,
+              fontWeight: FontWeight.w700,
+              height: 1.35,
+            ),
+          ),
+          const SizedBox(height: 13),
+          if (items.isEmpty)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(15),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF8FAFC),
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(color: const Color(0xFFE2E8F0)),
+              ),
+              child: const Row(
+                children: [
+                  Icon(
+                    Icons.manage_search_rounded,
+                    color: AppColors.sub,
+                    size: 27,
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      '아직 저장된 본인 확인 요청이 없습니다.',
+                      style: TextStyle(
+                        color: AppColors.sub,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          else
+            ...items.map((item) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 9),
+                child: _MyLostFoundClaimTile(item: item, onReturn: _load),
+              );
+            }),
+        ],
+      ),
+    );
+  }
+}
+
+class _MyLostFoundClaimTile extends StatelessWidget {
+  final _LostFoundItem item;
+  final VoidCallback onReturn;
+
+  const _MyLostFoundClaimTile({required this.item, required this.onReturn});
+
+  @override
+  Widget build(BuildContext context) {
+    final isFound = item.type == '습득';
+
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(18),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => _LostFoundDetailPage(item: item)),
+          ).then((_) => onReturn());
+        },
+        child: Container(
+          padding: const EdgeInsets.all(13),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF8FAFC),
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: const Color(0xFFE2E8F0)),
+          ),
+          child: Row(
+            children: [
+              Text(item.emoji, style: const TextStyle(fontSize: 30)),
+              const SizedBox(width: 11),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.title,
+                      style: const TextStyle(
+                        color: AppColors.text,
+                        fontSize: 15.5,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      '${item.place} · ${item.date}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: AppColors.sub,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 7),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
+                decoration: BoxDecoration(
+                  color: isFound
+                      ? const Color(0xFFEAF3FF)
+                      : const Color(0xFFFFF4D6),
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                child: Text(
+                  item.type,
+                  style: TextStyle(
+                    color: isFound ? AppColors.blue : const Color(0xFFB45309),
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class MyScreen extends StatelessWidget {
   const MyScreen({super.key});
 
@@ -14504,6 +14747,8 @@ class MyScreen extends StatelessWidget {
           _MyEmailAuthStatusCard(),
           const SizedBox(height: 14),
           const _InterestedClubSection(),
+          const SizedBox(height: 14),
+          const _MyLostFoundClaimsSection(),
           const SizedBox(height: 14),
           SizedBox(height: 22),
           Text(
