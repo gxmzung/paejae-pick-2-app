@@ -13998,6 +13998,186 @@ class _OfficialClubNoticeCard extends StatelessWidget {
   }
 }
 
+class _MyEmailAuthStatusCard extends StatefulWidget {
+  const _MyEmailAuthStatusCard();
+
+  @override
+  State<_MyEmailAuthStatusCard> createState() => _MyEmailAuthStatusCardState();
+}
+
+class _MyEmailAuthStatusCardState extends State<_MyEmailAuthStatusCard> {
+  bool verified = false;
+  String? email;
+  bool loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final isVerified = await EmailAuthStore.isVerified();
+    final savedEmail = await EmailAuthStore.verifiedEmail();
+
+    if (!mounted) return;
+
+    setState(() {
+      verified = isVerified;
+      email = savedEmail;
+      loading = false;
+    });
+  }
+
+  Future<void> _clearAuth() async {
+    await EmailAuthStore.clear();
+
+    if (!mounted) return;
+
+    setState(() {
+      verified = false;
+      email = null;
+    });
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('학교 이메일 인증 상태를 해제했습니다.')));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (loading) {
+      return const _Card(
+        padding: EdgeInsets.all(16),
+        child: Text(
+          '인증 상태를 확인하는 중...',
+          style: TextStyle(
+            color: AppColors.sub,
+            fontSize: 13,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+      );
+    }
+
+    return _Card(
+      padding: const EdgeInsets.all(17),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 58,
+            height: 58,
+            decoration: BoxDecoration(
+              color: verified
+                  ? const Color(0xFFE8FFF1)
+                  : const Color(0xFFFFF4D6),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Icon(
+              verified
+                  ? Icons.verified_user_rounded
+                  : Icons.mark_email_unread_rounded,
+              color: verified
+                  ? const Color(0xFF16A34A)
+                  : const Color(0xFFB45309),
+              size: 32,
+            ),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  verified ? '학교 이메일 인증 완료' : '학교 이메일 인증 필요',
+                  style: const TextStyle(
+                    color: AppColors.text,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  verified
+                      ? '인증 이메일: ${email ?? '확인됨'}'
+                      : '학교 이메일 인증을 완료하면 학생 전용 기능을 더 안전하게 사용할 수 있습니다.',
+                  style: const TextStyle(
+                    color: AppColors.sub,
+                    fontSize: 12.8,
+                    fontWeight: FontWeight.w700,
+                    height: 1.42,
+                  ),
+                ),
+                const SizedBox(height: 11),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 7,
+                      ),
+                      decoration: BoxDecoration(
+                        color: verified
+                            ? const Color(0xFFE8FFF1)
+                            : const Color(0xFFFFF4D6),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Text(
+                        verified ? 'verified' : 'not verified',
+                        style: TextStyle(
+                          color: verified
+                              ? const Color(0xFF16A34A)
+                              : const Color(0xFFB45309),
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                    const Spacer(),
+                    if (verified)
+                      TextButton.icon(
+                        onPressed: _clearAuth,
+                        icon: const Icon(Icons.logout_rounded, size: 17),
+                        label: const Text(
+                          '인증 해제',
+                          style: TextStyle(fontWeight: FontWeight.w900),
+                        ),
+                        style: TextButton.styleFrom(
+                          foregroundColor: const Color(0xFF64748B),
+                        ),
+                      )
+                    else
+                      TextButton.icon(
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                '앱 재실행 후 로그인 화면에서 학교 이메일 인증을 진행해주세요.',
+                              ),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.mail_rounded, size: 17),
+                        label: const Text(
+                          '인증 안내',
+                          style: TextStyle(fontWeight: FontWeight.w900),
+                        ),
+                        style: TextButton.styleFrom(
+                          foregroundColor: AppColors.blue,
+                        ),
+                      ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class MyScreen extends StatelessWidget {
   const MyScreen({super.key});
 
@@ -14008,6 +14188,8 @@ class MyScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _TopBar(),
+          SizedBox(height: 14),
+          _MyEmailAuthStatusCard(),
           const SizedBox(height: 14),
           const _InterestedClubSection(),
           const SizedBox(height: 14),
