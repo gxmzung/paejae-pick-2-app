@@ -21,3 +21,12 @@ flutter_*.log
 # Flutter / Android build artifacts
 *.apk
 *.aab
+
+# Android signing keys
+android/app/keystore/
+android/key.properties
+*.jks
+*.keystore
+
+# Local backup files
+lib/*.bak_*

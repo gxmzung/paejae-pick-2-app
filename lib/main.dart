@@ -323,6 +323,8 @@ class HomeScreen extends StatelessWidget {
           SizedBox(height: 16),
           _HomeHero(),
           SizedBox(height: 14),
+          _HomeCafeteriaPriorityCard(),
+          SizedBox(height: 12),
           _HomeGrid(),
           SizedBox(height: 14),
           _LiveStepCounterCard(),
@@ -2573,6 +2575,193 @@ class StepCounterStore {
     }
 
     return false;
+  }
+}
+
+class _HomeCafeteriaPriorityCard extends StatelessWidget {
+  const _HomeCafeteriaPriorityCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(28),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(28),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const CafeteriaScreen()),
+          );
+        },
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF126DFF), Color(0xFF7CCBFF)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(28),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x18006BFF),
+                blurRadius: 24,
+                offset: Offset(0, 12),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 86,
+                height: 86,
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(.94),
+                  borderRadius: BorderRadius.circular(26),
+                ),
+                child: const _AssetImage(
+                  path: Assets.citybrain,
+                  fit: BoxFit.contain,
+                ),
+              ),
+              const SizedBox(width: 16),
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '학생식당',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 25,
+                        fontWeight: FontWeight.w900,
+                        height: 1.08,
+                      ),
+                    ),
+                    SizedBox(height: 7),
+                    Text(
+                      '오늘 메뉴와 주간 식단을 먼저 확인해요',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 13.5,
+                        fontWeight: FontWeight.w800,
+                        height: 1.35,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.restaurant_menu_rounded,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                        SizedBox(width: 5),
+                        Text(
+                          '공식 식단 기반',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(.22),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.chevron_right_rounded,
+                  color: Colors.white,
+                  size: 28,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HomeSecondaryFeatureButton extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String body;
+  final VoidCallback onTap;
+
+  const _HomeSecondaryFeatureButton({
+    required this.icon,
+    required this.title,
+    required this.body,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(22),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(22),
+        onTap: onTap,
+        child: Container(
+          height: 116,
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(22),
+            border: Border.all(color: AppColors.line),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x0A000000),
+                blurRadius: 12,
+                offset: Offset(0, 6),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(icon, color: AppColors.blue, size: 28),
+              const Spacer(),
+              Text(
+                title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: AppColors.text,
+                  fontSize: 15.5,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              const SizedBox(height: 3),
+              Text(
+                body,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: AppColors.sub,
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -5665,57 +5854,48 @@ class _HomeGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      crossAxisCount: 2,
-      mainAxisSpacing: 12,
-      crossAxisSpacing: 12,
-      childAspectRatio: 1.08,
+    return Row(
       children: [
-        _AssetFeatureCard(
-          title: '학생식당',
-          body: '오늘 메뉴 · 주간 식단',
-          imagePath: Assets.citybrain,
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const CafeteriaScreen()),
-            );
-          },
+        Expanded(
+          child: _HomeSecondaryFeatureButton(
+            icon: Icons.school_rounded,
+            title: '학과백과',
+            body: '학과 소개',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const CollectionScreen()),
+              );
+            },
+          ),
         ),
-        _AssetFeatureCard(
-          title: '학과백과',
-          body: '학과 소개 · 나섬이 도감',
-          imagePath: Assets.collection,
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const CollectionScreen()),
-            );
-          },
+        const SizedBox(width: 9),
+        Expanded(
+          child: _HomeSecondaryFeatureButton(
+            icon: Icons.manage_search_rounded,
+            title: '분실물',
+            body: '습득 확인',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const LostFoundScreen()),
+              );
+            },
+          ),
         ),
-        _AssetFeatureCard(
-          title: '분실물',
-          body: '분실 · 습득 · 기숙사 확인',
-          imagePath: Assets.security,
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const LostFoundScreen()),
-            );
-          },
-        ),
-        _AssetFeatureCard(
-          title: '동아리 도감',
-          body: '공식 동아리 · 관심 등록',
-          imagePath: Assets.recruit,
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const RecruitScreen()),
-            );
-          },
+        const SizedBox(width: 9),
+        Expanded(
+          child: _HomeSecondaryFeatureButton(
+            icon: Icons.groups_rounded,
+            title: '동아리',
+            body: '공식 목록',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const RecruitScreen()),
+              );
+            },
+          ),
         ),
       ],
     );
