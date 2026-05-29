@@ -4729,201 +4729,6 @@ class _LostFoundDetailPageState extends State<_LostFoundDetailPage> {
   }
 }
 
-class _LostFoundDetailPageState extends State<_LostFoundDetailPage> {
-  bool marked = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadMarked();
-  }
-
-  Future<void> _loadMarked() async {
-    final value = await LostFoundInterestStore.contains(widget.item.id);
-    if (!mounted) return;
-    setState(() {
-      marked = value;
-    });
-  }
-
-  Future<void> _toggleMarked() async {
-    final value = await LostFoundInterestStore.toggle(widget.item.id);
-    if (!mounted) return;
-
-    setState(() {
-      marked = value;
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(value ? '본인 확인 요청 목록에 저장했어요.' : '본인 확인 요청을 해제했어요.'),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final item = widget.item;
-
-    return Scaffold(
-      backgroundColor: AppColors.bg,
-      body: _Page(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _DetailTopBar(title: item.type),
-            const SizedBox(height: 18),
-
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(22),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF126DFF), Color(0xFF8DD7FF)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(30),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Color(0x16006BFF),
-                    blurRadius: 24,
-                    offset: Offset(0, 12),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item.id,
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w900,
-                          ),
-                        ),
-                        const SizedBox(height: 9),
-                        Text(
-                          item.title,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 28,
-                            fontWeight: FontWeight.w900,
-                            height: 1.13,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          '${item.place} · ${item.date}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 13.5,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 14),
-                  Container(
-                    width: 92,
-                    height: 92,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(.22),
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Colors.white.withOpacity(.35),
-                        width: 3,
-                      ),
-                    ),
-                    child: Center(
-                      child: Text(
-                        item.emoji,
-                        style: const TextStyle(fontSize: 46),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 14),
-            Row(
-              children: [
-                _LostFoundInfoChip(
-                  icon: Icons.category_rounded,
-                  label: '종류',
-                  value: item.category,
-                ),
-                const SizedBox(width: 9),
-                _LostFoundInfoChip(
-                  icon: Icons.inventory_2_rounded,
-                  label: '상태',
-                  value: item.status,
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 14),
-            _LostFoundTagWrap(tags: item.tags),
-
-            const SizedBox(height: 14),
-            _Card(
-              padding: const EdgeInsets.all(16),
-              child: Text(
-                item.description,
-                style: const TextStyle(
-                  color: AppColors.text,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w800,
-                  height: 1.45,
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 14),
-            if (item.place.contains('기숙사'))
-              const _DormCctvAssistCard(compact: true),
-            if (item.place.contains('기숙사')) const SizedBox(height: 14),
-            const _LostFoundPrivacyNotice(),
-
-            const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              height: 56,
-              child: FilledButton.icon(
-                onPressed: _toggleMarked,
-                icon: Icon(
-                  marked ? Icons.check_circle_rounded : Icons.search_rounded,
-                ),
-                label: Text(
-                  marked ? '요청 목록에 저장됨' : '내 물건일 수도 있어요',
-                  style: const TextStyle(
-                    fontSize: 16.5,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-                style: FilledButton.styleFrom(
-                  backgroundColor: marked
-                      ? const Color(0xFF64748B)
-                      : AppColors.blue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class _LostFoundInfoChip extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -14655,79 +14460,149 @@ class _MyLostFoundClaimTile extends StatelessWidget {
 
   const _MyLostFoundClaimTile({required this.item, required this.onReturn});
 
+  Future<void> _cancelClaim(BuildContext context) async {
+    await LostFoundInterestStore.toggle(item.id);
+    onReturn();
+
+    if (context.mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('${item.title} 확인 요청을 취소했습니다.')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isFound = item.type == '습득';
 
-    return Material(
-      color: Colors.transparent,
-      borderRadius: BorderRadius.circular(18),
-      child: InkWell(
+    return Container(
+      padding: const EdgeInsets.all(13),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8FAFC),
         borderRadius: BorderRadius.circular(18),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => _LostFoundDetailPage(item: item)),
-          ).then((_) => onReturn());
-        },
-        child: Container(
-          padding: const EdgeInsets.all(13),
-          decoration: BoxDecoration(
-            color: const Color(0xFFF8FAFC),
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: const Color(0xFFE2E8F0)),
-          ),
-          child: Row(
-            children: [
-              Text(item.emoji, style: const TextStyle(fontSize: 30)),
-              const SizedBox(width: 11),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      item.title,
-                      style: const TextStyle(
-                        color: AppColors.text,
-                        fontSize: 15.5,
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+      ),
+      child: Column(
+        children: [
+          Material(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(16),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(16),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => _LostFoundDetailPage(item: item),
+                  ),
+                ).then((_) => onReturn());
+              },
+              child: Row(
+                children: [
+                  Text(item.emoji, style: const TextStyle(fontSize: 30)),
+                  const SizedBox(width: 11),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.title,
+                          style: const TextStyle(
+                            color: AppColors.text,
+                            fontSize: 15.5,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          '${item.place} · ${item.date}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: AppColors.sub,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 7),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 9,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: isFound
+                          ? const Color(0xFFEAF3FF)
+                          : const Color(0xFFFFF4D6),
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: Text(
+                      item.type,
+                      style: TextStyle(
+                        color: isFound
+                            ? AppColors.blue
+                            : const Color(0xFFB45309),
+                        fontSize: 10.5,
                         fontWeight: FontWeight.w900,
                       ),
                     ),
-                    const SizedBox(height: 3),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 11),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 7,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE8FFF1),
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                child: const Row(
+                  children: [
+                    Icon(
+                      Icons.pending_actions_rounded,
+                      color: Color(0xFF16A34A),
+                      size: 15,
+                    ),
+                    SizedBox(width: 4),
                     Text(
-                      '${item.place} · ${item.date}',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: AppColors.sub,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
+                      '확인 요청됨',
+                      style: TextStyle(
+                        color: Color(0xFF16A34A),
+                        fontSize: 11,
+                        fontWeight: FontWeight.w900,
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: 7),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
-                decoration: BoxDecoration(
-                  color: isFound
-                      ? const Color(0xFFEAF3FF)
-                      : const Color(0xFFFFF4D6),
-                  borderRadius: BorderRadius.circular(999),
+              const Spacer(),
+              TextButton.icon(
+                onPressed: () => _cancelClaim(context),
+                icon: const Icon(Icons.close_rounded, size: 17),
+                label: const Text(
+                  '요청 취소',
+                  style: TextStyle(fontWeight: FontWeight.w900),
                 ),
-                child: Text(
-                  item.type,
-                  style: TextStyle(
-                    color: isFound ? AppColors.blue : const Color(0xFFB45309),
-                    fontSize: 10.5,
-                    fontWeight: FontWeight.w900,
-                  ),
+                style: TextButton.styleFrom(
+                  foregroundColor: const Color(0xFFE11D48),
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  minimumSize: const Size(0, 34),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
               ),
             ],
           ),
-        ),
+        ],
       ),
     );
   }
