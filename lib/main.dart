@@ -4770,7 +4770,7 @@ class _DormCctvAssistPageState extends State<DormCctvAssistPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text(
-          'CCTV/YOLO 분석은 학교 승인 및 지원 서버 확보 후 제공 예정입니다. 현재는 요청 저장을 막아두었습니다.',
+          'CCTV/YOLO 분석은 학교 승인 및 지원 서버 확보 후 제공 예정입니다. 현재 2단계 베타에서는 요청 저장을 막아두었습니다.',
         ),
       ),
     );
@@ -5424,27 +5424,28 @@ class NasemiAiScreen extends StatelessWidget {
           children: const [
             _DetailTopBar(title: '배재SLM AI 상담'),
             SizedBox(height: 18),
-            _FeatureLockedFundingCard(
+            _FundingLockedNoticeCard(
               icon: Icons.smart_toy_rounded,
-              title: '배재SLM AI 상담 준비 중',
+              title: '배재SLM AI 상담 잠금',
               body:
-                  'AI 상담은 모델 서버, 문서 검색 서버, 운영 로그 관리가 필요합니다. 현재 베타 버전에서는 학교 지원 서버 또는 운영 예산 확보 전까지 실제 AI 응답을 제공하지 않습니다.',
+                  'AI 상담은 모델 서버, 문서 검색 서버, 운영 로그 관리 비용이 필요합니다. 2단계 사비 베타에서는 실제 AI 응답을 제공하지 않고, 학교 지원 서버 또는 운영 예산 확보 후 활성화합니다.',
+              badge: '잠금',
             ),
             SizedBox(height: 12),
-            _FeatureLockedFundingCard(
+            _FundingLockedNoticeCard(
               icon: Icons.hub_rounded,
-              title: '연동 예정 모듈',
+              title: '확장 예정 구조',
               body:
-                  '학생식당, 학과백과, 동아리 도감, 분실물, 나섬이 도감을 자연어로 안내하는 캠퍼스 AI 허브로 확장할 예정입니다.',
+                  '학생식당, 학과백과, 동아리 도감, 분실물, 나섬이 도감을 자연어로 묶는 캠퍼스 AI 허브로 확장할 예정입니다.',
               badge: '예정',
             ),
             SizedBox(height: 12),
-            _FeatureLockedFundingCard(
+            _FundingLockedNoticeCard(
               icon: Icons.privacy_tip_rounded,
-              title: '보안 검토 후 활성화',
+              title: '보안 검토 필요',
               body:
-                  'AI 상담 로그, 개인정보 입력, 공식 답변 오해 가능성 때문에 개인정보 처리방침과 학교 검토가 끝난 뒤 제한적으로 활성화하는 것이 안전합니다.',
-              badge: '검토 필요',
+                  'AI 상담 로그, 개인정보 입력, 공식 답변 오해 가능성이 있어 개인정보 처리방침과 학교 검토가 끝난 뒤 제한적으로 열어야 합니다.',
+              badge: '검토',
             ),
           ],
         ),
@@ -5580,6 +5581,182 @@ class _FeatureLockedFundingCard extends StatelessWidget {
                     fontSize: 12.5,
                     fontWeight: FontWeight.w700,
                     height: 1.42,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Stage2BetaModeCard extends StatelessWidget {
+  const _Stage2BetaModeCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return _Card(
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+              color: const Color(0xFFEAF3FF),
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: const Icon(
+              Icons.savings_rounded,
+              color: AppColors.blue,
+              size: 29,
+            ),
+          ),
+          const SizedBox(width: 13),
+          const Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '2단계 베타 운영 모드',
+                  style: TextStyle(
+                    color: AppColors.text,
+                    fontSize: 17.5,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                SizedBox(height: 6),
+                Text(
+                  '사비 운영 가능한 범위로 학생식당, 학과백과, 동아리, 분실물, 이메일 인증을 우선 제공합니다. AI와 영상분석은 지원 확보 전까지 잠금 상태입니다.',
+                  style: TextStyle(
+                    color: AppColors.sub,
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w700,
+                    height: 1.42,
+                  ),
+                ),
+                SizedBox(height: 10),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: [
+                    _Stage2Pill(text: '월 1~3만 원 목표'),
+                    _Stage2Pill(text: 'AI 잠금'),
+                    _Stage2Pill(text: 'YOLO 잠금'),
+                    _Stage2Pill(text: '기본 기능 우선'),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Stage2Pill extends StatelessWidget {
+  final String text;
+
+  const _Stage2Pill({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
+      decoration: BoxDecoration(
+        color: const Color(0xFFEAF3FF),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: AppColors.blue,
+          fontSize: 10.8,
+          fontWeight: FontWeight.w900,
+        ),
+      ),
+    );
+  }
+}
+
+class _FundingLockedNoticeCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String body;
+  final String badge;
+
+  const _FundingLockedNoticeCard({
+    required this.icon,
+    required this.title,
+    required this.body,
+    this.badge = '지원 필요',
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return _Card(
+      padding: const EdgeInsets.all(17),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF4D6),
+              borderRadius: BorderRadius.circular(19),
+            ),
+            child: Icon(icon, color: const Color(0xFFB45309), size: 30),
+          ),
+          const SizedBox(width: 13),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: const TextStyle(
+                          color: AppColors.text,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 9,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFFF4D6),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Text(
+                        badge,
+                        style: const TextStyle(
+                          color: Color(0xFFB45309),
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  body,
+                  style: const TextStyle(
+                    color: AppColors.sub,
+                    fontSize: 12.8,
+                    fontWeight: FontWeight.w700,
+                    height: 1.45,
                   ),
                 ),
               ],
@@ -11754,6 +11931,14 @@ class _NasemiCatchResultPageState extends State<NasemiCatchResultPage> {
               ),
             ),
             const SizedBox(height: 16),
+            const _FundingLockedNoticeCard(
+              icon: Icons.videocam_off_rounded,
+              title: 'CCTV/YOLO 분석 잠금',
+              body:
+                  '영상 분석은 서버 비용, CCTV 접근 권한, 개인정보 검토가 필요합니다. 2단계 사비 베타에서는 기능 설명만 제공하고 실제 분석 요청은 수행하지 않습니다.',
+              badge: '잠금',
+            ),
+            const SizedBox(height: 14),
             _Card(
               padding: const EdgeInsets.all(17),
               child: Column(
