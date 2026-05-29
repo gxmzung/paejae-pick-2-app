@@ -64,6 +64,93 @@ class Assets {
   static const security = 'assets/images/icon_security.png';
 }
 
+class EmailAuthStore {
+  static const String verifiedKey = 'email_verified';
+  static const String verifiedEmailKey = 'verified_email';
+
+  static Future<void> markVerified(String email) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(verifiedKey, true);
+    await prefs.setString(verifiedEmailKey, email);
+  }
+
+  static Future<bool> isVerified() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(verifiedKey) ?? false;
+  }
+
+  static Future<String?> verifiedEmail() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(verifiedEmailKey);
+  }
+
+  static Future<void> clear() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(verifiedKey);
+    await prefs.remove(verifiedEmailKey);
+  }
+}
+
+class EmailAuthApi {
+  // Android emulator에서 Mac localhost 접근: 10.0.2.2
+  static const String baseUrl = 'http://10.0.2.2:8001';
+
+  static Future<String> requestCode(String email) async {
+    final uri = Uri.parse('$baseUrl/auth/request-code');
+
+    final res = await http
+        .post(
+          uri,
+          headers: const {'Content-Type': 'application/json'},
+          body: jsonEncode({'email': email}),
+        )
+        .timeout(const Duration(seconds: 8));
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      try {
+        final decoded = jsonDecode(utf8.decode(res.bodyBytes));
+        if (decoded is Map && decoded['message'] != null) {
+          return decoded['message'].toString();
+        }
+      } catch (_) {}
+      return '인증번호를 보냈습니다.';
+    }
+
+    try {
+      final decoded = jsonDecode(utf8.decode(res.bodyBytes));
+      if (decoded is Map && decoded['detail'] != null) {
+        throw Exception(decoded['detail'].toString());
+      }
+    } catch (_) {}
+
+    throw Exception('인증번호 요청 실패 (${res.statusCode})');
+  }
+
+  static Future<bool> verifyCode(String email, String code) async {
+    final uri = Uri.parse('$baseUrl/auth/verify-code');
+
+    final res = await http
+        .post(
+          uri,
+          headers: const {'Content-Type': 'application/json'},
+          body: jsonEncode({'email': email, 'code': code}),
+        )
+        .timeout(const Duration(seconds: 8));
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      try {
+        final decoded = jsonDecode(utf8.decode(res.bodyBytes));
+        if (decoded is Map && decoded['verified'] != null) {
+          return decoded['verified'] == true;
+        }
+      } catch (_) {}
+      return true;
+    }
+
+    return false;
+  }
+}
+
 class AppText {
   static const betaNotice =
       '학생 프로젝트 기반 베타 서비스입니다. 아직 학교 공식 앱이 아니며, 일부 기능은 시범 운영될 수 있습니다.';
@@ -104,7 +191,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  void requestCode() {
+  Future<void> requestCode() async {
     final email = emailController.text.trim();
 
     if (email.isEmpty || !email.endsWith('@pcu.ac.kr')) {
@@ -114,24 +201,70 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
+    // 개발용 mock. 실제 배포 전에는 dev 계정 예외를 제거하는 게 맞습니다.
+    if (email == 'dev@pcu.ac.kr') {
+      setState(() {
+        codeSent = true;
+        errorText = '개발 모드 인증코드는 000000 입니다.';
+      });
+      return;
+    }
+
     setState(() {
-      codeSent = true;
-      errorText = '개발 모드 인증코드는 000000 입니다.';
+      codeSent = false;
+      errorText = '인증번호를 요청하는 중입니다.';
     });
+
+    try {
+      final message = await EmailAuthApi.requestCode(email);
+
+      if (!mounted) return;
+
+      setState(() {
+        codeSent = true;
+        errorText = message;
+      });
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        codeSent = false;
+        errorText = '메일 인증 서버에 연결할 수 없습니다. 백엔드 실행 상태를 확인해주세요.';
+      });
+    }
   }
 
-  void login() {
+  Future<void> login() async {
     final email = emailController.text.trim();
     final code = codeController.text.trim();
 
     final isDev = email == 'dev@pcu.ac.kr' && code == '000000';
 
     if (!isDev) {
+      if (!codeSent) {
+        setState(() {
+          errorText = '먼저 이메일 인증번호를 요청해주세요.';
+        });
+        return;
+      }
+
       setState(() {
-        errorText = '개발자 테스트 계정은 dev@pcu.ac.kr / 000000 입니다.';
+        errorText = '인증번호를 확인하는 중입니다.';
       });
-      return;
+
+      final verified = await EmailAuthApi.verifyCode(email, code);
+
+      if (!mounted) return;
+
+      if (!verified) {
+        setState(() {
+          errorText = '인증번호가 올바르지 않거나 만료되었습니다.';
+        });
+        return;
+      }
     }
+
+    await EmailAuthStore.markVerified(email);
 
     Navigator.pushReplacement(
       context,
@@ -4632,16 +4765,13 @@ class _DormCctvAssistPageState extends State<DormCctvAssistPage> {
   }
 
   Future<void> _submitRequest() async {
-    final value = '$selectedPlace · $selectedObject · $selectedTime · 승인대기';
-    await DormCctvRequestStore.add(value);
-
     if (!mounted) return;
-
-    await _loadRequests();
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('AI 확인 요청이 저장됐어요. 실제 CCTV 분석은 운영자 승인 후 진행됩니다.'),
+        content: Text(
+          'CCTV/YOLO 분석은 학교 승인 및 지원 서버 확보 후 제공 예정입니다. 현재는 요청 저장을 막아두었습니다.',
+        ),
       ),
     );
   }
@@ -4682,7 +4812,7 @@ class _DormCctvAssistPageState extends State<DormCctvAssistPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'RTSP + YOLO 연동 예정',
+                          'RTSP + YOLO 지원 필요',
                           style: TextStyle(
                             color: Colors.white70,
                             fontSize: 14,
@@ -4701,7 +4831,7 @@ class _DormCctvAssistPageState extends State<DormCctvAssistPage> {
                         ),
                         SizedBox(height: 10),
                         Text(
-                          '운영자 승인 · 목적 제한 · 로그 기록 필요',
+                          '학교 승인 · 서버 지원 · 보안 검토 필요',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 12.5,
@@ -4718,6 +4848,15 @@ class _DormCctvAssistPageState extends State<DormCctvAssistPage> {
             ),
 
             const SizedBox(height: 16),
+            const _FeatureLockedFundingCard(
+              icon: Icons.videocam_off_rounded,
+              title: 'CCTV/YOLO 분석 비활성화',
+              body:
+                  '영상 분석은 서버 비용, CCTV 접근 권한, 개인정보 검토가 필요합니다. 현재 베타에서는 기능 설명만 제공하고 실제 분석 요청은 저장하지 않습니다.',
+              badge: '비활성화',
+            ),
+
+            const SizedBox(height: 14),
             _Card(
               padding: const EdgeInsets.all(17),
               child: Column(
@@ -5272,612 +5411,42 @@ class _NasemiAiShortcutCard extends StatelessWidget {
   }
 }
 
-class _AiMessage {
-  final String role;
-  final String text;
-
-  const _AiMessage({required this.role, required this.text});
-
-  bool get isUser => role == 'user';
-}
-
-class NasemiAiScreen extends StatefulWidget {
+class NasemiAiScreen extends StatelessWidget {
   const NasemiAiScreen({super.key});
 
   @override
-  State<NasemiAiScreen> createState() => _NasemiAiScreenState();
-}
-
-class _NasemiAiScreenState extends State<NasemiAiScreen> {
-  final TextEditingController inputController = TextEditingController();
-  final TextEditingController endpointController = TextEditingController();
-
-  bool sending = false;
-  bool apiOnline = false;
-  String endpoint = 'http://10.0.2.2:8000/chat';
-
-  final List<_AiMessage> messages = const [
-    _AiMessage(
-      role: 'assistant',
-      text:
-          '안녕하세요. 배재Pick AI 상담 베타입니다. 지금은 앱 내부 정보와 배재SLM API 연결 준비를 함께 테스트합니다.',
-    ),
-  ].toList();
-
-  @override
-  void initState() {
-    super.initState();
-    _loadEndpoint();
-  }
-
-  @override
-  void dispose() {
-    inputController.dispose();
-    endpointController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _loadEndpoint() async {
-    final value = await NasemiAiSettingsStore.loadEndpoint();
-    if (!mounted) return;
-
-    setState(() {
-      endpoint = value;
-      endpointController.text = value;
-    });
-
-    _checkApi();
-  }
-
-  Future<void> _saveEndpoint() async {
-    final value = endpointController.text.trim();
-    if (value.isEmpty) return;
-
-    await NasemiAiSettingsStore.saveEndpoint(value);
-
-    if (!mounted) return;
-
-    setState(() {
-      endpoint = value;
-    });
-
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text('AI endpoint 저장: $value')));
-
-    _checkApi();
-  }
-
-  Future<void> _checkApi() async {
-    try {
-      final uri = Uri.parse(endpoint);
-      final base = Uri(
-        scheme: uri.scheme,
-        host: uri.host,
-        port: uri.hasPort ? uri.port : null,
-        path: '/health',
-      );
-
-      final res = await http.get(base).timeout(const Duration(seconds: 2));
-
-      if (!mounted) return;
-
-      setState(() {
-        apiOnline = res.statusCode >= 200 && res.statusCode < 500;
-      });
-    } catch (_) {
-      if (!mounted) return;
-
-      setState(() {
-        apiOnline = false;
-      });
-    }
-  }
-
-  Future<String?> _askApi(String question) async {
-    try {
-      final res = await http
-          .post(
-            Uri.parse(endpoint),
-            headers: const {'Content-Type': 'application/json'},
-            body: jsonEncode({
-              'question': question,
-              'query': question,
-              'message': question,
-              'app': 'paejae_pick_2',
-            }),
-          )
-          .timeout(const Duration(seconds: 8));
-
-      if (res.statusCode < 200 || res.statusCode >= 300) {
-        return null;
-      }
-
-      final decoded = jsonDecode(utf8.decode(res.bodyBytes));
-
-      if (decoded is Map<String, dynamic>) {
-        final answer =
-            decoded['answer'] ??
-            decoded['response'] ??
-            decoded['message'] ??
-            decoded['text'] ??
-            decoded['result'];
-
-        if (answer != null && answer.toString().trim().isNotEmpty) {
-          return answer.toString();
-        }
-      }
-
-      if (decoded is String && decoded.trim().isNotEmpty) {
-        return decoded;
-      }
-
-      return null;
-    } catch (_) {
-      return null;
-    }
-  }
-
-  String _mockAnswer(String q) {
-    final question = q.toLowerCase();
-
-    if (question.contains('학식') ||
-        question.contains('식단') ||
-        question.contains('학생식당') ||
-        question.contains('메뉴')) {
-      return '학생식당 정보는 공식 식단 페이지를 기준으로 주간 메뉴를 보여주는 방향이 맞습니다. 앱에서는 하단에 오늘 메뉴를 간단히 보여주고, 자세한 월~금 조식·중식·석식은 “오늘의 메뉴” 안에 넣는 구조가 좋습니다.';
-    }
-
-    if (question.contains('분실') ||
-        question.contains('습득') ||
-        question.contains('cctv') ||
-        question.contains('기숙사')) {
-      return '기숙사 분실물은 앱에서 먼저 분실물·습득물 게시판으로 접수하고, CCTV 확인은 운영자 승인 후 제한된 시간대와 장소에 대해서만 요청하는 구조가 안전합니다. 사람 추적이 아니라 물건 후보 탐지만 해야 합니다.';
-    }
-
-    if (question.contains('동아리') ||
-        question.contains('크로우') ||
-        question.contains('volley') ||
-        question.contains('ccc')) {
-      return '동아리 도감에서는 공식 동아리 목록을 분야별로 보여주고, 관심 등록과 동아리 나섬이 수집을 연결하면 참여 유도가 강해집니다. 상세 소개와 모집 여부는 동아리 대표 확인 후 추가하는 것이 안전합니다.';
-    }
-
-    if (question.contains('학과') ||
-        question.contains('디자인') ||
-        question.contains('컴퓨터') ||
-        question.contains('학과백과')) {
-      return '학과백과는 학과 소개, 배우는 것, 공간, 진로, 추천 성향, 학과 나섬이 수집 조건을 묶는 구조가 좋습니다. 교수님 인터뷰를 통해 학과별 실제 콘텐츠를 채우면 신입생에게 가치가 커집니다.';
-    }
-
-    if (question.contains('나섬') ||
-        question.contains('도감') ||
-        question.contains('qr') ||
-        question.contains('포켓몬')) {
-      return '나섬이 기능은 지도 출현, QR 수집, 조우 화면, 도감 등록, 배지/퀘스트 보상까지 연결되어야 몰입도가 생깁니다. 학과 나섬이는 QR 확정 수집, 동아리 나섬이는 상세 페이지/행사 기반 수집으로 분리하는 게 좋습니다.';
-    }
-
-    return '현재는 배재SLM API 연결 준비 단계입니다. 백엔드가 연결되면 학교 문서 RAG 기반으로 더 정확히 답변할 수 있고, 지금은 앱 내부 기능 기준으로 안내합니다. 질문을 학식, 학과, 분실물, 동아리, 나섬이 중 하나로 좁히면 더 잘 답할 수 있습니다.';
-  }
-
-  Future<void> sendQuestion([String? preset]) async {
-    final text = (preset ?? inputController.text).trim();
-    if (text.isEmpty || sending) return;
-
-    setState(() {
-      sending = true;
-      messages.add(_AiMessage(role: 'user', text: text));
-      inputController.clear();
-    });
-
-    final apiAnswer = await _askApi(text);
-    final answer = apiAnswer ?? _mockAnswer(text);
-
-    if (!mounted) return;
-
-    setState(() {
-      sending = false;
-      apiOnline = apiAnswer != null;
-      messages.add(
-        _AiMessage(
-          role: 'assistant',
-          text: apiAnswer == null
-              ? '$answer\n\n※ 현재 답변은 앱 내부 fallback입니다. 배재SLM 백엔드가 연결되면 RAG 답변으로 교체됩니다.'
-              : answer,
-        ),
-      );
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final quickQuestions = [
-      '오늘 학생식당 메뉴는 어디서 봐?',
-      '분실물 찾는 절차 알려줘',
-      '나한테 맞는 동아리 추천해줘',
-      '학과백과는 어떤 식으로 쓰면 돼?',
-    ];
-
     return Scaffold(
       backgroundColor: AppColors.bg,
       body: _Page(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const _DetailTopBar(title: '배재SLM AI 상담'),
-            const SizedBox(height: 18),
-
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(22),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF126DFF), Color(0xFF8DD7FF)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(30),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Color(0x16006BFF),
-                    blurRadius: 24,
-                    offset: Offset(0, 12),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: const [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'NASEMI AI Core 연동 준비',
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          '학교 정보를\nAI에게 물어봐요',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 28,
-                            fontWeight: FontWeight.w900,
-                            height: 1.13,
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          'SLM + RAG + 앱 모듈 연결',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12.5,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(width: 12),
-                  Text('🤖', style: TextStyle(fontSize: 68)),
-                ],
-              ),
+          children: const [
+            _DetailTopBar(title: '배재SLM AI 상담'),
+            SizedBox(height: 18),
+            _FeatureLockedFundingCard(
+              icon: Icons.smart_toy_rounded,
+              title: '배재SLM AI 상담 준비 중',
+              body:
+                  'AI 상담은 모델 서버, 문서 검색 서버, 운영 로그 관리가 필요합니다. 현재 베타 버전에서는 학교 지원 서버 또는 운영 예산 확보 전까지 실제 AI 응답을 제공하지 않습니다.',
             ),
-
-            const SizedBox(height: 14),
-            _NasemiAiStatusCard(
-              apiOnline: apiOnline,
-              endpoint: endpoint,
-              controller: endpointController,
-              onCheck: _checkApi,
-              onSave: _saveEndpoint,
+            SizedBox(height: 12),
+            _FeatureLockedFundingCard(
+              icon: Icons.hub_rounded,
+              title: '연동 예정 모듈',
+              body:
+                  '학생식당, 학과백과, 동아리 도감, 분실물, 나섬이 도감을 자연어로 안내하는 캠퍼스 AI 허브로 확장할 예정입니다.',
+              badge: '예정',
             ),
-
-            const SizedBox(height: 14),
-            const _NasemiAiModuleCard(),
-
-            const SizedBox(height: 14),
-            const Text(
-              '빠른 질문',
-              style: TextStyle(
-                color: AppColors.text,
-                fontSize: 20,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-            const SizedBox(height: 9),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: quickQuestions.map((q) {
-                return _AiQuickChip(text: q, onTap: () => sendQuestion(q));
-              }).toList(),
-            ),
-
-            const SizedBox(height: 14),
-            const Text(
-              '대화',
-              style: TextStyle(
-                color: AppColors.text,
-                fontSize: 20,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-            const SizedBox(height: 9),
-
-            ...messages.map((m) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 9),
-                child: _AiChatBubble(message: m),
-              );
-            }),
-
-            if (sending)
-              const Padding(
-                padding: EdgeInsets.only(bottom: 9),
-                child: _Card(
-                  padding: EdgeInsets.all(14),
-                  child: Text(
-                    '나섬이가 답변을 준비하는 중...',
-                    style: TextStyle(
-                      color: AppColors.sub,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ),
-              ),
-
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: inputController,
-                    minLines: 1,
-                    maxLines: 3,
-                    decoration: InputDecoration(
-                      hintText: '배재Pick에 대해 질문하기',
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 13,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(18),
-                        borderSide: const BorderSide(color: AppColors.line),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(18),
-                        borderSide: const BorderSide(color: AppColors.line),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(18),
-                        borderSide: const BorderSide(
-                          color: AppColors.blue,
-                          width: 1.4,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 9),
-                SizedBox(
-                  height: 52,
-                  child: FilledButton(
-                    onPressed: sending ? null : () => sendQuestion(),
-                    style: FilledButton.styleFrom(
-                      backgroundColor: AppColors.blue,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(17),
-                      ),
-                    ),
-                    child: const Icon(Icons.send_rounded),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _NasemiAiStatusCard extends StatelessWidget {
-  final bool apiOnline;
-  final String endpoint;
-  final TextEditingController controller;
-  final VoidCallback onCheck;
-  final VoidCallback onSave;
-
-  const _NasemiAiStatusCard({
-    required this.apiOnline,
-    required this.endpoint,
-    required this.controller,
-    required this.onCheck,
-    required this.onSave,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return _Card(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(
-                apiOnline ? Icons.cloud_done_rounded : Icons.cloud_off_rounded,
-                color: apiOnline
-                    ? const Color(0xFF16A34A)
-                    : const Color(0xFFB45309),
-                size: 27,
-              ),
-              const SizedBox(width: 9),
-              Expanded(
-                child: Text(
-                  apiOnline ? '배재SLM API 연결됨' : 'API 미연결 · fallback 답변 사용',
-                  style: const TextStyle(
-                    color: AppColors.text,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 11),
-          TextField(
-            controller: controller,
-            decoration: InputDecoration(
-              labelText: 'AI endpoint',
-              hintText: 'http://10.0.2.2:8000/chat',
-              filled: true,
-              fillColor: const Color(0xFFF8FAFC),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 13,
-                vertical: 12,
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(17),
-                borderSide: const BorderSide(color: AppColors.line),
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: onCheck,
-                  icon: const Icon(Icons.network_ping_rounded),
-                  label: const Text(
-                    '연결 확인',
-                    style: TextStyle(fontWeight: FontWeight.w900),
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.blue,
-                    side: const BorderSide(color: AppColors.blue),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 9),
-              Expanded(
-                child: FilledButton.icon(
-                  onPressed: onSave,
-                  icon: const Icon(Icons.save_rounded),
-                  label: const Text(
-                    '저장',
-                    style: TextStyle(fontWeight: FontWeight.w900),
-                  ),
-                  style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.blue,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _NasemiAiModuleCard extends StatelessWidget {
-  const _NasemiAiModuleCard();
-
-  @override
-  Widget build(BuildContext context) {
-    return _Card(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          Icon(Icons.hub_rounded, color: AppColors.blue, size: 29),
-          SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              '연동 대상: 학생식당 공식 식단, 학과백과, 동아리 도감, 분실물·습득물, 기숙사 AI 확인 요청, 나섬이 도감. 배재SLM은 이 모듈들을 자연어로 묶는 안내 계층으로 쓰는 게 가장 효율적입니다.',
-              style: TextStyle(
-                color: AppColors.sub,
-                fontSize: 12.5,
-                fontWeight: FontWeight.w700,
-                height: 1.42,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _AiQuickChip extends StatelessWidget {
-  final String text;
-  final VoidCallback onTap;
-
-  const _AiQuickChip({required this.text, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return ActionChip(
-      onPressed: onTap,
-      label: Text(text),
-      backgroundColor: const Color(0xFFEAF3FF),
-      labelStyle: const TextStyle(
-        color: AppColors.blue,
-        fontWeight: FontWeight.w900,
-        fontSize: 12.2,
-      ),
-      side: BorderSide.none,
-    );
-  }
-}
-
-class _AiChatBubble extends StatelessWidget {
-  final _AiMessage message;
-
-  const _AiChatBubble({required this.message});
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: message.isUser ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 310),
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: message.isUser ? AppColors.blue : Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: message.isUser ? null : Border.all(color: AppColors.line),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x0A000000),
-              blurRadius: 10,
-              offset: Offset(0, 5),
+            SizedBox(height: 12),
+            _FeatureLockedFundingCard(
+              icon: Icons.privacy_tip_rounded,
+              title: '보안 검토 후 활성화',
+              body:
+                  'AI 상담 로그, 개인정보 입력, 공식 답변 오해 가능성 때문에 개인정보 처리방침과 학교 검토가 끝난 뒤 제한적으로 활성화하는 것이 안전합니다.',
+              badge: '검토 필요',
             ),
           ],
-        ),
-        child: Text(
-          message.text,
-          style: TextStyle(
-            color: message.isUser ? Colors.white : AppColors.text,
-            fontSize: 13,
-            fontWeight: FontWeight.w700,
-            height: 1.42,
-          ),
         ),
       ),
     );
@@ -5937,6 +5506,91 @@ class _HomeGrid extends StatelessWidget {
   }
 }
 
+class _FeatureLockedFundingCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String body;
+  final String badge;
+
+  const _FeatureLockedFundingCard({
+    required this.icon,
+    required this.title,
+    required this.body,
+    this.badge = '지원 필요',
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return _Card(
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 54,
+            height: 54,
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF4D6),
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: Icon(icon, color: const Color(0xFFB45309), size: 29),
+          ),
+          const SizedBox(width: 13),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: const TextStyle(
+                          color: AppColors.text,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 9,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFFF4D6),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Text(
+                        badge,
+                        style: const TextStyle(
+                          color: Color(0xFFB45309),
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 7),
+                Text(
+                  body,
+                  style: const TextStyle(
+                    color: AppColors.sub,
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w700,
+                    height: 1.42,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _HomeCompactToolsSection extends StatelessWidget {
   const _HomeCompactToolsSection();
 
@@ -5988,9 +5642,10 @@ class _HomeCompactToolsSection extends StatelessWidget {
                 icon: Icons.smart_toy_rounded,
                 label: 'AI',
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const NasemiAiScreen()),
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('배재SLM AI는 학교 서버/운영 지원 확보 후 제공 예정입니다.'),
+                    ),
                   );
                 },
               ),
