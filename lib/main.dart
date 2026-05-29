@@ -4408,6 +4408,61 @@ class _LostFoundCard extends StatelessWidget {
   }
 }
 
+class _LostFoundAuthRequiredCard extends StatelessWidget {
+  const _LostFoundAuthRequiredCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return _Card(
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 54,
+            height: 54,
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF4D6),
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: const Icon(
+              Icons.lock_rounded,
+              color: Color(0xFFB45309),
+              size: 30,
+            ),
+          ),
+          const SizedBox(width: 13),
+          const Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '본인 확인 요청은 인증 후 가능',
+                  style: TextStyle(
+                    color: AppColors.text,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                SizedBox(height: 7),
+                Text(
+                  '분실물 오인 요청과 허위 요청을 줄이기 위해 학교 이메일 인증을 완료한 사용자만 “내 물건일 수도 있어요” 요청을 저장할 수 있습니다.',
+                  style: TextStyle(
+                    color: AppColors.sub,
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w700,
+                    height: 1.42,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _LostFoundDetailPage extends StatefulWidget {
   final _LostFoundItem item;
 
@@ -4415,6 +4470,263 @@ class _LostFoundDetailPage extends StatefulWidget {
 
   @override
   State<_LostFoundDetailPage> createState() => _LostFoundDetailPageState();
+}
+
+class _LostFoundDetailPageState extends State<_LostFoundDetailPage> {
+  bool marked = false;
+  bool verified = false;
+  String? verifiedEmail;
+  bool loadingAuth = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadMarked();
+    _loadAuth();
+  }
+
+  Future<void> _loadMarked() async {
+    final value = await LostFoundInterestStore.contains(widget.item.id);
+    if (!mounted) return;
+    setState(() {
+      marked = value;
+    });
+  }
+
+  Future<void> _loadAuth() async {
+    final isVerified = await EmailAuthStore.isVerified();
+    final email = await EmailAuthStore.verifiedEmail();
+
+    if (!mounted) return;
+
+    setState(() {
+      verified = isVerified;
+      verifiedEmail = email;
+      loadingAuth = false;
+    });
+  }
+
+  Future<void> _toggleMarked() async {
+    if (!verified) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('학교 이메일 인증 후 본인 확인 요청을 저장할 수 있습니다.')),
+      );
+      return;
+    }
+
+    final value = await LostFoundInterestStore.toggle(widget.item.id);
+    if (!mounted) return;
+
+    setState(() {
+      marked = value;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(value ? '본인 확인 요청 목록에 저장했어요.' : '본인 확인 요청을 해제했어요.'),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final item = widget.item;
+
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      body: _Page(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _DetailTopBar(title: item.type),
+            const SizedBox(height: 18),
+
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(22),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF126DFF), Color(0xFF8DD7FF)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(30),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x16006BFF),
+                    blurRadius: 24,
+                    offset: Offset(0, 12),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.id,
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        const SizedBox(height: 9),
+                        Text(
+                          item.title,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 28,
+                            fontWeight: FontWeight.w900,
+                            height: 1.13,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          '${item.place} · ${item.date}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Container(
+                    width: 92,
+                    height: 92,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(.22),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.white.withOpacity(.35),
+                        width: 3,
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        item.emoji,
+                        style: const TextStyle(fontSize: 46),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 14),
+            Row(
+              children: [
+                _LostFoundInfoChip(
+                  icon: Icons.category_rounded,
+                  label: '종류',
+                  value: item.category,
+                ),
+                const SizedBox(width: 9),
+                _LostFoundInfoChip(
+                  icon: Icons.inventory_2_rounded,
+                  label: '상태',
+                  value: item.status,
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 14),
+            _LostFoundTagWrap(tags: item.tags),
+
+            const SizedBox(height: 14),
+            _Card(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                item.description,
+                style: const TextStyle(
+                  color: AppColors.text,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w800,
+                  height: 1.45,
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 14),
+            if (!verified && !loadingAuth) const _LostFoundAuthRequiredCard(),
+
+            if (!verified && !loadingAuth) const SizedBox(height: 14),
+
+            if (verified)
+              _Card(
+                padding: const EdgeInsets.all(15),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.verified_user_rounded,
+                      color: Color(0xFF16A34A),
+                      size: 27,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        '인증된 사용자: ${verifiedEmail ?? '학교 이메일 확인됨'}',
+                        style: const TextStyle(
+                          color: AppColors.text,
+                          fontSize: 12.8,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+            if (verified) const SizedBox(height: 14),
+
+            const _LostFoundPrivacyNotice(),
+
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              height: 56,
+              child: FilledButton.icon(
+                onPressed: loadingAuth ? null : _toggleMarked,
+                icon: Icon(
+                  !verified
+                      ? Icons.lock_rounded
+                      : marked
+                      ? Icons.check_circle_rounded
+                      : Icons.search_rounded,
+                ),
+                label: Text(
+                  !verified
+                      ? '학교 이메일 인증 필요'
+                      : marked
+                      ? '요청 목록에 저장됨'
+                      : '내 물건일 수도 있어요',
+                  style: const TextStyle(
+                    fontSize: 16.5,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                style: FilledButton.styleFrom(
+                  backgroundColor: !verified
+                      ? const Color(0xFF94A3B8)
+                      : marked
+                      ? const Color(0xFF64748B)
+                      : AppColors.blue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class _LostFoundDetailPageState extends State<_LostFoundDetailPage> {
