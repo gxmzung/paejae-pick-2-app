@@ -178,3 +178,5 @@ When information is not verified, the app must clearly mark it as mock or 확인
 Next Step
 
 v2.9 should implement the first mock Department Intro screen with a small seed dataset.
+
+```
