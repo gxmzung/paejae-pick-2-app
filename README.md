@@ -1,376 +1,234 @@
-# Paejae Pick 2.0
+# Paejae Pick 2
 
-Paejae Pick 2.0 is a Flutter-based smart campus MVP app concept for Paichai University students.
+![Status](https://img.shields.io/badge/status-MVP-blue)
+![Platform](https://img.shields.io/badge/platform-Flutter-02569B)
+![Focus](https://img.shields.io/badge/focus-Smart%20Campus-green)
+![University](https://img.shields.io/badge/Paejae-University-red)
 
-It connects cafeteria information, campus exploration, Nasumi collection, code-based missions, department tours, club notices, and future CityBrain operation data.
+**Flutter Smart Campus App for Paejae University Students**  
+Campus Map · Student Services · QR Missions · Club Notices · CityBrain Preview
 
-## Current Version
+---
 
-`v1.5-internal-test-package`
+## Overview
 
-## Core Strategy
+**Paejae Pick 2** is a smart campus app prototype designed for Paejae University students.
 
-The first reason to install Paejae Pick is cafeteria information.
+The project focuses on improving campus life through mobile-first student services, campus navigation, collection missions, club notices, and cafeteria-related service experiments.
 
-The reason to return is Nasumi collection, campus missions, department tours, and club notices.
+The goal is not just to build a UI demo.  
+The goal is to explore how a university campus service can be designed, documented, tested, and prepared for internal review.
 
-## Implemented Features
+---
 
-### v0.1 Flutter MVP Shell
+## Problem
 
-- Flutter project structure
-- Bottom navigation
-- Home
-- Campus map mock
-- Collection mock
-- Club notice mock
-- My page mock
+University students often need scattered information from many places:
 
-### v0.2 Design Polish
+- Campus facilities
+- Student notices
+- Club information
+- Cafeteria information
+- Department-related information
+- Events and missions
+- Campus navigation
 
-- Splash screen
-- Login mock screen
-- Nasumi visual concept
+Paejae Pick 2 explores how these can be connected into one student-centered platform.
 
-### v0.3 Collection Mission
+---
 
-- Mission code input
-- Local card acquisition
-- Mission complete screen
-- SharedPreferences storage
+## Core Features
 
-### v0.4 Collection Detail
+### Smart Campus App
 
-- Collection progress
-- Acquired / locked card state
-- Card detail screen
-- Acquisition condition display
+- Flutter-based mobile app
+- Campus service structure
+- Student-friendly navigation
+- Multi-platform Flutter scaffold
 
-### v0.5 CityBrain Cafeteria
+### Campus Map
 
-- Cafeteria detail screen
-- Today's menu
-- Congestion status mock
-- Estimated waiting time
-- Recommended visit time
-- Menu satisfaction buttons
-- Menu card acquisition
-- Local collection integration
+- Campus location information
+- Building and facility exploration
+- Future AR campus map direction
 
-### v0.6 Release PRD
+### Collection and Mission
 
-- Product requirements document
-- v1.0 release scope
-- Cost and privacy plan
-- Android release readiness checklist
+- QR-based mission concept
+- Student participation flow
+- Nasumi collection concept
+- Campus engagement feature
 
-### v0.7 Department Nasumi Tour
+### Club Notices
 
-- Department Nasumi Tour screen
-- Department mission codes
-- Department building information
-- Local collection integration
+- Club notice list
+- Detail view direction
+- Student activity support
 
-### v0.8 Club Notice Detail
+### CityBrain Preview
 
-- Club notice detail screen
-- Structured recruitment information
-- Favorite club local storage
-- My Page favorite count integration
+- Cafeteria service concept
+- Student feedback direction
+- Campus operation data idea
 
-### v0.9 Auth and Privacy Design
+### Auth and Privacy
 
-- Privacy guide screen
-- Local data reset
-- Login privacy notice link
-- My Page privacy menu
-
-### v1.0 Release Candidate
-
-- Android-first MVP scope
-- Release candidate documentation
-- Store-readiness direction
-- Privacy-light local-first strategy
-
-
-### v1.3 QR Mission Polish
-
-- QR scan mock screen
-- Improved mission code entry
-- Quick internal test code buttons
-- Better success/failure feedback
-- Mission code list for internal testing
-
-### v1.4 UI / Screenshot Prep
-
-- Screenshot target list
-- Internal test demo flow
-- Release-facing demo scenario
-- Build verification for presentation
-
-
-### v1.5 Internal Test Package
-
-- Internal tester guide
-- Android APK installation guide
-- Feedback form questions
-- Release package notes
+- University email authentication direction
+- Privacy planning documents
 - Internal testing preparation
-\n
-### v1.9 Club Notice Submit Mock
 
-- Club notice submission mock
-- Structured recruitment request flow
-- Club name / title / category / contact / description fields
-- Submit confirmation without backend
-- Direction toward admin-approved club notices
+---
 
+## Product Direction
 
-### v2.0 Campus Participation Hub
+Paejae Pick 2 is positioned as:
 
-- Reframes club notice hall as campus participation infrastructure
-- Adds participation type explanation
-- Clarifies that the app does not operate events directly
-- Positions the app as a structured notice and recruitment hub
-- Prepares expansion to department events, projects, volunteer groups, and contest teams
-\n
-### v2.1 Participation Notice Types
+- A student life platform
+- A smart campus service prototype
+- A university app MVP
+- A product planning and documentation project
+- A campus operations experiment
 
-- Defines Campus Participation Hub notice types
-- Club recruitment
-- Department / office events
-- Project team recruitment
-- Volunteer / supporters notices
-- Contest team recruitment
-- Clarifies host/app responsibility split
+---
 
+## Tech Stack
 
-### v2.2 Participation Status Labels
-
-- Defines notice status labels
-- Host submitted
-- Info check needed
-- Under review
-- Visible
-- Closed
-- Hidden
-- Clarifies that checked does not mean officially approved
-
-
-### v2.3 Participation Filter / Deadline Sort
-
-- Adds participation hub filter concept
-- All / club / event / project / deadline-soon categories
-- Deadline-based sorting principle
-- Visibility rules for closed, under-review, and hidden notices
-- Clarifies that the hub should reduce search cost
-\n
-### v2.4 Home Internal Test Positioning
-
-- Adds Home screen value proposition
-- Cafeteria as install reason
-- Nasumi / missions as repeat-use reason
-- Campus Participation Hub as campus spread reason
-- Clarifies the app as campus infrastructure MVP
-
-
-### v2.5 MVP Feature Freeze
-
-- Freezes MVP feature scope before internal beta
-- Defines install reason / repeat-use reason / campus spread reason
-- Locks included and excluded features
-- Prevents uncontrolled feature creep before testing
-- Prepares the project for v3.0 Internal Beta Candidate
-\n
-### v2.7 Design Lock / UI Spec
-
-- Locks generated concept images as the UI reference direction
-- Defines visual identity, colors, typography, layout, and mascot rules
-- Adds full screen inventory
-- Adds department intro and campus map design direction
-- Prevents UI drift between concept images and Flutter implementation
-\n
-### v2.8 Department Intro IA / Data Model
-
-- Defines department introduction information architecture
-- Adds department data field model
-- Connects department intro with campus map, Nasumi collection, QR missions, and transfer exploration
-- Adds verification status labels for department information
-- Prepares the app for department intro mock screens
-\n
-### v2.9 Department Intro Mock Screen
-
-- Adds Department Intro list screen
-- Adds Department Detail screen
-- Adds seed data for Computer Engineering, AI, Game Engineering, and Business
-- Connects department intro with transfer exploration, buildings, Nasumi, and QR missions
-- Adds My Page entry point
-
-
-### v3.1 Department Interview Template
-
-- Adds department interview template
-- Separates official information from student interview information
-- Adds app summary format for department dictionary content
-- Defines safe wording for transfer, admissions, and department atmosphere
-- Prepares data collection for department dictionary expansion
-\n
-### v3.2 Department Seed Data Expansion
-
-- Expands Department Intro seed dataset
-- Adds AI/SW, physical AI, business, media, webtoon, and animation-related departments
-- Keeps all unverified information marked as mock / 확인 필요
-- Prepares the Department Dictionary for visual concept generation and UI polish
-
-
-### v3.3 Department Full Seed Basic
-
-- Expands Department Dictionary to a full basic department seed list
-- Keeps all department information marked as 확인 필요
-- Defers interview content to a later version
-- Prepares the app for department filtering and grouped browsing
-\n
-### v3.4 Department Filter / Grouped Browsing
-
-- Adds Department Dictionary filter/grouping direction
-- Defines category-based browsing for 전체, 인문사회, 자연과학, 공학, 예체능, 평생교육
-- Adds a Department Filter Guide screen
-- Prepares the Department Dictionary for search and grouped browsing
-\n
-### v3.5 Department Detail UI Polish
-
-- Polishes Department Detail screen wording
-- Adds recommendation section for students exploring departments
-- Improves admission/transfer note wording
-- Clarifies Department Nasumi and QR mission connection
-- Moves Department Dictionary closer to generated UI concept direction
-\n
-### v3.6 Department Search / Filter UI
-
-- Adds actual search field to Department Dictionary
-- Adds category filter chips for 전체, 인문사회, 자연과학, 공학, 예체능, 평생교육
-- Adds result count and empty result state
-- Makes Department Dictionary easier to browse after full seed expansion
-\n
-### v3.7 Department Card Visual Polish
-
-- Polishes Department Dictionary card wording
-- Clarifies category, location, and mission code fields
-- Updates detail CTA to 학과백과 열기
-- Improves screenshot readiness for sharing with professors, student councils, and testers
-\n
-### v3.8 Department Demo / Screenshot Package
-
-- Adds Department Dictionary demo package
-- Adds screenshot checklist for sharing and feedback
-- Adds short explanation text for professors, student councils, senior students, and testers
-- Prepares the Department Dictionary for feedback collection and interview recruitment
-\n
-### v3.9 Department Screenshot QA / Gap Report
-
-- Adds screenshot QA gap report for Department Dictionary
-- Defines comparison points between generated concept images and Flutter implementation
-- Adds screenshot capture guide
-- Adds v4.0 UI fix plan
-- Prepares Department Dictionary for real-device visual correction
-\n
-### v4.0 Department UI Fix Pass
-
-- Defines the first Department Dictionary UI correction pass
-- Keeps verified/unverified department information separated
-- Prepares Department Dictionary for real-device screenshots and stakeholder feedback
-- Adds TeamLink concept as the next feature direction for contest team matching
-
-
-### v4.1 PCU TeamLink IA / Data Model
-
-- Defines TeamLink as a contest team matching feature
-- Adds contest notice, team recruitment, role tag, profile, and application status data models
-- Frames TeamLink as a way to increase contest participation and cross-major collaboration
-- Adds contest proposal draft for school submission
-- Prepares TeamLink mock screen implementation for v4.2
-\n
-### v4.2 TeamLink Mock Screen
-
-- Adds first TeamLink mock screen
-- Shows contest notices, role tags, and team recruitment cards
-- Adds TeamLink entry point from Participation Hub
-- Frames TeamLink as a contest participation and cross-major collaboration feature
-\n
-### v4.3 TeamLink Official Notice Source
-
-- Adds official notice source rule for TeamLink
-- Connects TeamLink direction to the university general notice board
-- Separates official contest notices from student-created team recruitment posts
-- Adds notice collection and verification rules
-- Prepares TeamLink recruitment detail / creation flow for v4.4
-\n
-### v4.4 TeamLink Recruitment Flow
-
-- Adds TeamLink recruitment detail screen
-- Adds create recruitment mock screen
-- Connects recruitment cards to detail flow
-- Adds create recruitment entry button
-- Keeps TeamLink as a mock flow without real backend submission
-\n
-### v4.5 TeamLink Trust / Safety Policy
-
-- Adds TeamLink trust and safety policy screen
-- Defines report reasons and privacy boundaries
-- Clarifies that TeamLink does not guarantee team quality or contest awards
-- Separates official notices, student recruitment posts, and mock data
-- Prepares TeamLink for proposal and stakeholder explanation
-\n
-### v4.6 TeamLink Proposal / Screenshot Package
-
-- Adds TeamLink proposal package
-- Adds screenshot checklist for TeamLink screens
-- Adds short pitch text for professors, staff, student councils, and students
-- Frames TeamLink as official-notice-based contest participation infrastructure
-- Prepares TeamLink for real-device screenshot QA and stakeholder explanation
-\n## Tech Stack
+### App
 
 - Flutter
 - Dart
-- SharedPreferences
-- Android first
-- iOS planned later
+- Android
+- iOS
+- Web scaffold
 
-## v1.0 Scope
+### Backend / Server
 
-Included:
+- Python
+- Auth server prototype
+- Environment configuration
 
-- Splash / Login mock
-- Home
-- Cafeteria detail
-- Code-based mission
-- Collection / card detail
-- Department Nasumi Tour
-- Club notice detail
-- My Page
-- Privacy guide
-- Local data reset
+### Documentation
 
-Excluded from v1.0:
+- PRD
+- Release notes
+- QA documents
+- Privacy plan
+- App store readiness notes
 
-- Real school email authentication
-- Real QR camera scanner
-- Firebase/Supabase sync
-- Real-time location tracking
-- Admin console
-- Official school data integration
-- POS/kiosk integration
-- YOLO congestion integration
+---
 
-## Release Direction
+## Project Structure
 
-v1.0 targets Android internal testing first.
+- `lib/` — Flutter app source code
+- `assets/` — App images and static assets
+- `android/` — Android project
+- `ios/` — iOS project
+- `web/` — Web build scaffold
+- `server/` — Auth server prototype
+- `docs/` — PRD, release, QA, design, privacy, and planning documents
+- `release-notes/` — Internal release notes
+- `test/` — Flutter test scaffold
 
-The app intentionally avoids heavy backend usage and sensitive personal data storage in the early stage.
+---
 
-## Test Focus
+## Documentation
 
-- Does cafeteria information create a reason to install?
-- Does Nasumi collection create a reason to return?
-- Does department tour help students learn campus structure?
-- Does the club notice hall feel more structured than scattered posts?
+### Product
+
+- [PRD](docs/PRD_PAEJAE_PICK_2_0.md)
+- [Release Scope v1](docs/RELEASE_SCOPE_V1.md)
+- [App Store Readiness](docs/APP_STORE_READINESS.md)
+
+### Roadmap
+
+- [v0.2 Design Polish](docs/V0_2_DESIGN_POLISH.md)
+- [v0.3 Collection Mission](docs/V0_3_COLLECTION_MISSION.md)
+- [v0.5 CityBrain Cafeteria](docs/V0_5_CITYBRAIN_CAFETERIA.md)
+- [v0.7 Department Nasumi Tour](docs/V0_7_DEPARTMENT_NASUMI_TOUR.md)
+- [v0.8 Club Notice Detail](docs/V0_8_CLUB_NOTICE_DETAIL.md)
+- [v0.9 Auth Privacy Design](docs/V0_9_AUTH_PRIVACY_DESIGN.md)
+- [v1.0 Release Candidate](docs/V1_0_RELEASE_CANDIDATE.md)
+- [v1.1 Android Release Config](docs/V1_1_ANDROID_RELEASE_CONFIG.md)
+- [v1.2 Play Store Internal Test Prep](docs/V1_2_PLAYSTORE_INTERNAL_TEST_PREP.md)
+- [v1.3 QR Mission Polish](docs/V1_3_QR_MISSION_POLISH.md)
+- [v1.4 UI Screenshot Prep](docs/V1_4_UI_SCREENSHOT_PREP.md)
+
+### Privacy and Cost
+
+- [Cost and Privacy Plan](docs/COST_PRIVACY_PLAN.md)
+
+### Release Notes
+
+- [GitHub Release Notes v1.0](docs/GITHUB_RELEASE_NOTES_V1_0.md)
+- [Internal Test Package](release-notes/V1_5_INTERNAL_TEST_PACKAGE.md)
+
+---
+
+## Current Status
+
+Paejae Pick 2 is currently in MVP / internal test preparation stage.
+
+Implemented or partially implemented:
+
+- Flutter app scaffold
+- Campus service screens
+- Collection mission direction
+- Club notice detail planning
+- CityBrain cafeteria concept
+- Auth and privacy planning
+- Android release configuration documents
+- Internal test preparation documents
+
+---
+
+## MVP Goal
+
+Paejae Pick 2 aims to provide a usable student-facing smart campus MVP.
+
+Initial MVP flow:
+
+Student opens app  
+→ checks campus services  
+→ explores notices or map  
+→ participates in missions  
+→ receives useful campus information
+
+---
+
+## My Role
+
+- Product planning
+- Flutter app development
+- Documentation management
+- Release planning
+- Campus service research
+- Internal review preparation
+
+---
+
+## Limitations
+
+Current limitations:
+
+- Not an official university service
+- Backend integration is limited
+- Campus data requires review
+- Authentication is prototype-level
+- Store release requires policy and privacy review
+- Operational ownership must be defined before real deployment
+
+---
+
+## Author
+
+**Lee Youngjun**  
+Department of Computer Science, Paejae University  
+GitHub: [@gxmzung](https://github.com/gxmzung)
+
+---
+
+## Disclaimer
+
+Paejae Pick 2 is an independent smart campus app prototype.
+
+It is not an official Paejae University service unless reviewed and approved by the appropriate university departments.
