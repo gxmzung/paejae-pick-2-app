@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'smart_mobility.dart';
+
 void main() {
   runApp(const PaejaePickApp());
 }
@@ -319,7 +321,7 @@ class _MainShellState extends State<MainShell> {
 
   final pages = const [
     HomeScreen(),
-    CampusMapScreen(),
+    SmartMobilityHubScreen(),
     CollectionScreen(),
     ClubScreen(),
     MyPageScreen(),
@@ -344,9 +346,9 @@ class _MainShellState extends State<MainShell> {
             label: '홈',
           ),
           NavigationDestination(
-            icon: Icon(Icons.map_outlined),
-            selectedIcon: Icon(Icons.map),
-            label: '캠퍼스맵',
+            icon: Icon(Icons.route_outlined),
+            selectedIcon: Icon(Icons.route),
+            label: '스마트맵',
           ),
           NavigationDestination(
             icon: Icon(Icons.collections_bookmark_outlined),
@@ -519,6 +521,8 @@ class HomeScreen extends StatelessWidget {
               Expanded(child: MissionMiniCard()),
             ],
           ),
+          const SizedBox(height: 16),
+          const SmartMobilityPreviewCard(),
           const SizedBox(height: 16),
           AppCard(
             child: Column(
@@ -5696,12 +5700,19 @@ class AppStatusRoadmapScreen extends StatelessWidget {
       '개인정보 안내',
       '로컬 데이터 초기화',
       '테스터 피드백 허브',
+      '스마트 이동 허브',
+      '3D 실내지도 검색 / 길안내 mock',
+      '자율주행 픽업 예약 simulation',
+      '자율배송 요청 / 추적 simulation',
     ];
 
     final notYet = [
       '실제 학교 이메일 인증',
       '실제 QR 카메라 스캔',
-      '실시간 위치 추적',
+      '공식 건물·호실·교수연구실 데이터 연동',
+      '실제 순환차량 위치 / 픽업 예약 API',
+      'NEXUS ROS2 자율배송로봇 운행 API',
+      '차량 안전·운영·개인정보 정책',
       '실제 학생식당 데이터 연동',
       '실제 동아리 공고 등록',
       '관리자 콘솔',
@@ -5724,11 +5735,15 @@ class AppStatusRoadmapScreen extends StatelessWidget {
         'desc': '학과별 나섬이, 건물 미션, 칭호, 랭킹 등 재방문 요소를 보강합니다.',
       },
       {
-        'title': '4단계: 학교/동아리 협의',
-        'desc': '학교명, 캐릭터, 동아리 공고 운영 주체, 개인정보 정책을 정리합니다.',
+        'title': '4단계: 학교/이동 데이터 협의',
+        'desc': '공식 호실 정보, 교수연구실 공개 범위, 차량 운영 주체와 개인정보 정책을 정리합니다.',
       },
       {
-        'title': '5단계: Play Store 내부 테스트',
+        'title': '5단계: ROS2 로봇 / 차량 API 연동',
+        'desc': '배재Pick은 호출·예약·관제 UI를, NEXUS 11번 프로젝트는 실제 로봇·자율주행 스택을 담당합니다.',
+      },
+      {
+        'title': '6단계: Play Store 내부 테스트',
         'desc': 'AAB, 개인정보처리방침 URL, 앱 아이콘, 스크린샷을 준비해 내부 테스트를 진행합니다.',
       },
     ];
