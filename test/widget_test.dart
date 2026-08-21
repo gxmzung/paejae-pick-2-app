@@ -1,30 +1,34 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:paejae_pick_2_app/main.dart';
+import 'package:paejae_pick_2_app/smart_mobility.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('smart mobility hub exposes all three MVP flows', (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(home: Scaffold(body: SmartMobilityHubScreen())),
+    );
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    expect(find.text('3D 실내지도'), findsOneWidget);
+    expect(find.text('자율주행 픽업'), findsOneWidget);
+    expect(find.text('자율배송'), findsOneWidget);
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+  testWidgets('indoor map can search by room number', (tester) async {
+    await tester.pumpWidget(const MaterialApp(home: IndoorMapScreen()));
+
+    await tester.enterText(find.byType(TextField), 'J408');
     await tester.pump();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.textContaining('J408'), findsOneWidget);
+  });
+
+  testWidgets('main navigation opens the smart mobility hub', (tester) async {
+    await tester.pumpWidget(const MaterialApp(home: MainShell()));
+
+    await tester.tap(find.text('스마트맵'));
+    await tester.pump();
+
+    expect(find.text('스마트 이동'), findsOneWidget);
   });
 }

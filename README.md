@@ -6,7 +6,7 @@ It connects cafeteria information, campus exploration, Nasumi collection, code-b
 
 ## Current Version
 
-`v1.5-internal-test-package`
+`v5.0-smart-mobility-mvp`
 
 ## Core Strategy
 
@@ -15,6 +15,26 @@ The first reason to install Paejae Pick is cafeteria information.
 The reason to return is Nasumi collection, campus missions, department tours, and club notices.
 
 ## Implemented Features
+
+### v5.0 Smart Mobility MVP
+
+- Adds a Smart Mobility hub to the main navigation
+- Adds building, floor, room, department, and professor-office search mock
+- Adds an indoor floor-plan and route-guidance prototype
+- Adds an autonomous campus shuttle pickup reservation simulation
+- Adds an autonomous delivery request and tracking simulation
+- Separates the app layer from the future NEXUS ROS2 robot/vehicle layer
+- Uses demo data only; no real reservation, dispatch, location tracking, or delivery occurs
+
+### Smart Mobility Product Boundary
+
+Paejae Pick is the student-facing smart-campus service. It owns search,
+indoor guidance, pickup requests, delivery requests, and status presentation.
+
+The NEXUS ROS2 project owns the physical robot/vehicle stack: localization,
+path planning, perception, obstacle avoidance, remote control, and emergency
+stop. Production integration will happen through approved APIs after safety,
+operations, privacy, and university-data agreements are in place.
 
 ### v0.1 Flutter MVP Shell
 
