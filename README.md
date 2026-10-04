@@ -1,3 +1,32 @@
+﻿<!-- PORTFOLIO-HEADER:START -->
+
+# paejae-pick-2-app
+
+> Flutter smart-campus platform with indoor navigation, campus services, and autonomous-mobility interface concepts.
+
+**Domain:** Smart Campus · Mobile App · Future Mobility  
+**Role:** Development Lead · Service Planning · Mobile QA  
+**Status:** MVP / University Maker Project
+
+## Portfolio Summary
+
+### System Focus
+
+- Flutter-based campus-service MVP
+- campus information and student-service flows
+- 3D / indoor navigation concepts
+- real-device QA and release-scope management
+- autonomous shuttle / delivery request simulations
+- ROS2 mobility-layer integration boundary
+
+### Engineering Boundary
+
+> Current mobility features are application-layer prototypes and simulations. Real robot / vehicle dispatch, tracking, and campus operations require separate ROS2 integration, safety validation, and institutional approval.
+
+---
+
+<!-- PORTFOLIO-HEADER:END -->
+
 # Paejae Pick 2.0
 
 Paejae Pick 2.0 is a Flutter-based smart campus MVP app concept for Paichai University students.
@@ -394,3 +423,4 @@ The app intentionally avoids heavy backend usage and sensitive personal data sto
 - Does Nasumi collection create a reason to return?
 - Does department tour help students learn campus structure?
 - Does the club notice hall feel more structured than scattered posts?
+
