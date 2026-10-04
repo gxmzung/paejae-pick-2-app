@@ -424,3 +424,4 @@ The app intentionally avoids heavy backend usage and sensitive personal data sto
 - Does department tour help students learn campus structure?
 - Does the club notice hall feel more structured than scattered posts?
 
+
